@@ -7,8 +7,43 @@ packages = ["game2048"]
 
 [project]
 name = "game2048"
-version = "0.0.5"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
 dependencies = [
-    "gymnasium",
-    "pygame",
+    "gymnasium>=1.0",
+    "pygame>=2.6",
+    "numpy>=2.0",
+    "numba>=0.61",
+    "jax>=0.6",
+    "flax>=0.10",
+    "optax>=0.2",
 ]
+
+[project.optional-dependencies]
+cuda = ["jax[cuda13]>=0.6; sys_platform == 'linux'"]
+
+[project.scripts]
+game2048 = "game2048.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff", "ty"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = [".uv-bootstrap", ".tools", "artifacts", "runs"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["game2048.network.ModelConfig", "game2048.training.TrainConfig", "game2048.planner.PlannerConfig", "game2048.config.PlannerConfig"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ty.environment]
+python-version = "3.12"
+
+[tool.ty.src]
+exclude = [".uv-bootstrap/**", ".tools/**", "artifacts/**", "runs/**"]

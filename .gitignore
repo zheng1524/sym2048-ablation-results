@@ -136,3 +136,15 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# Experiment artifacts and compiled caches
+artifacts/
+runs/
+logs/
+.uv-bootstrap/
+.tools/
+.ruff_cache/
+*.nbc
+*.nbi
+core
+core.*
