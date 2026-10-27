@@ -1,63 +1,18 @@
 """Resumable experiment orchestration; each stage gets a fresh GPU process."""
 
-import csv
-import hashlib
 import json
 import subprocess
 import sys
-from dataclasses import asdict
 from pathlib import Path
 
 from game2048.artifacts import atomic_json
-from game2048.config import PlannerConfig
-from game2048.teacher import Teacher
-
-
-def _planner_arguments(config: PlannerConfig) -> list[str]:
-    return [
-        argument
-        for field, value in asdict(config).items()
-        for argument in ("--" + field.replace("_", "-"), str(value))
-    ]
-
-
-def _cached_evaluation(
-    directory: Path, checkpoint: Path, mode: str, games: int, seed: int, planner: PlannerConfig
-) -> dict | None:
-    """Reuse only complete results produced by these weights and evaluation settings."""
-    try:
-        metrics = json.loads((directory / "metrics.json").read_text())
-        expected = {
-            "mode": mode,
-            "games": games,
-            "seed_start": seed,
-            "checkpoint_sha256": hashlib.sha256(
-                (checkpoint / "params.msgpack").read_bytes()
-            ).hexdigest(),
-        }
-        if any(metrics.get(k) != v for k, v in expected.items()):
-            return None
-        if mode != "greedy" and metrics.get("planner") != asdict(planner):
-            return None
-        if not isinstance(metrics.get("checkpoint_metadata"), dict):
-            return None
-        with (directory / "games.csv").open(newline="") as stream:
-            rows = list(csv.DictReader(stream))
-        if len(rows) != games or [int(row["seed"]) for row in rows] != list(
-            range(seed, seed + games)
-        ):
-            return None
-        for row in rows:
-            # A truncated final CSV row can have all column names but missing values.
-            for field in ("max_exponent", "max_tile", "tile_sum", "moves"):
-                if int(row[field]) < 0:
-                    return None
-        return metrics
-    except (OSError, ValueError, KeyError, TypeError, csv.Error):
-        return None
+from game2048.config import INFERENCE_VERSIONS, PlannerConfig
+from game2048.evaluation_jobs import evaluate_checkpoint, planner_arguments
 
 
 def run_experiment(teacher: Path, output: Path, seeds: list[int], smoke: bool = False) -> dict:
+    from game2048.teacher import Teacher
+
     if not seeds or len(set(seeds)) != len(seeds):
         raise ValueError("Provide at least one training seed, with no duplicates")
     verified = Teacher(teacher)
@@ -66,6 +21,7 @@ def run_experiment(teacher: Path, output: Path, seeds: list[int], smoke: bool = 
     output.mkdir(parents=True, exist_ok=True)
     test_games, test_seed = (16 if smoke else 2000), 100_000
     specification = {
+        "inference_versions": INFERENCE_VERSIONS,
         "teacher_sha256": verified.manifest["content_sha256"],
         "seeds": seeds,
         "smoke": smoke,
@@ -89,40 +45,10 @@ def run_experiment(teacher: Path, output: Path, seeds: list[int], smoke: bool = 
                 check=True,
             )
 
-    def evaluation_stage(name, checkpoint, destination, mode, planner_config):
-        metrics = _cached_evaluation(
-            destination,
-            checkpoint,
-            mode,
-            test_games,
-            test_seed,
-            planner_config,
+    def evaluation_stage(checkpoint, destination, mode, planner_config):
+        return evaluate_checkpoint(
+            checkpoint, destination, mode, test_games, test_seed, planner_config, output
         )
-        if metrics is None:
-            args = [
-                "evaluate",
-                str(checkpoint),
-                str(destination),
-                "--mode",
-                mode,
-                "--games",
-                str(test_games),
-                "--seed",
-                str(test_seed),
-            ]
-            args += _planner_arguments(planner_config)
-            stage(name, args)
-            metrics = _cached_evaluation(
-                destination,
-                checkpoint,
-                mode,
-                test_games,
-                test_seed,
-                planner_config,
-            )
-            if metrics is None:
-                raise RuntimeError(f"Incomplete or mismatched evaluation artifacts: {destination}")
-        return metrics
 
     results = []
     for seed in seeds:
@@ -162,7 +88,7 @@ def run_experiment(teacher: Path, output: Path, seeds: list[int], smoke: bool = 
         )
         for mode in ("greedy", "shooting", "mppi"):
             destination = run / mode
-            metrics = evaluation_stage(f"seed{seed}-{mode}", frozen, destination, mode, planner)
+            metrics = evaluation_stage(frozen, destination, mode, planner)
             results.append({"training_seed": seed, "variant": mode, **metrics})
 
         td = run / "td"
@@ -185,9 +111,7 @@ def run_experiment(teacher: Path, output: Path, seeds: list[int], smoke: bool = 
                 args += ["--resume"]
             stage(f"seed{seed}-td", args)
         destination = run / "td-greedy"
-        metrics = evaluation_stage(
-            f"seed{seed}-td-eval", td / "best", destination, "greedy", PlannerConfig()
-        )
+        metrics = evaluation_stage(td / "best", destination, "greedy", PlannerConfig())
         results.append({"training_seed": seed, "variant": "td-greedy", **metrics})
         if not (run / "replay.json").exists():
             stage(
@@ -198,7 +122,7 @@ def run_experiment(teacher: Path, output: Path, seeds: list[int], smoke: bool = 
                     str(run / "replay.json"),
                     "--mode",
                     "mppi",
-                    *_planner_arguments(planner),
+                    *planner_arguments(planner),
                 ],
             )
         atomic_json(output / "results.json", {"specification": specification, "runs": results})

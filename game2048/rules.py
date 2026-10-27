@@ -1,12 +1,9 @@
 """Board encoding and D4 utilities; moves are implemented in kernels and jax_env."""
 
-from itertools import permutations
-
 import numpy as np
 from numpy.typing import NDArray
 
 Board = NDArray[np.int32]
-PRIORITIES = np.asarray(list(permutations(range(4))), dtype=np.int32)
 
 
 def transform(board: NDArray, group: int) -> NDArray:

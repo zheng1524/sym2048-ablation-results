@@ -23,15 +23,17 @@ def test_d4_network_gradient_checkpoint_and_independent_inference(tmp_path):
         params = jax.tree.map(lambda p, d: p - 1e-3 * d, params, grad)
     save_model(tmp_path, params, model.config, {"test": True})
     loaded, weights, _ = load_model(tmp_path)
-    np.testing.assert_allclose(
-        loaded.apply({"params": weights}, boards), predict(params, boards), atol=2e-6
-    )
+    assert loaded.config == model.config
+    for original, restored in zip(jax.tree.leaves(params), jax.tree.leaves(weights), strict=True):
+        np.testing.assert_array_equal(original, restored)
+    # Compare the same compiled path: eager vs JIT GPU reduction order can differ.
+    np.testing.assert_array_equal(predict(weights, boards), predict(params, boards))
     start = jax_env.reset(jax.random.PRNGKey(7))
     _, valid = jax_env.afterstates(start)
     config = PlannerConfig(
         horizon=3, candidates=2, scenarios=2, iterations=2, verification_scenarios=2
     )
-    for mode in ("greedy", "shooting", "mppi"):
+    for mode in ("greedy", "rollout", "shooting", "mppi"):
         action = make_actor(loaded, mode, config)(weights, start, jax.random.PRNGKey(1))
         assert bool(valid[action])
     result = evaluate(loaded, weights, games=2, batch_size=2)

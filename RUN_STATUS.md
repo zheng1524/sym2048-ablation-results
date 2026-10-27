@@ -1,6 +1,6 @@
 # 实现与运行记录
 
-更新时间：2026-10-27（Asia/Shanghai）。三个种子的正式实验已全部完成。
+更新时间：2026-10-27（Asia/Shanghai）。首轮三个种子的训练及正式对照已完成；本轮网络反馈规划完成筛选后，已主动停止正式扩跑。
 
 ## 已完成
 
@@ -29,7 +29,7 @@
 | 单次 MPPI 决策 | 5.51 ms |
 
 这是未训练默认网络的有限计时，用于排查明显瓶颈，不是训练速度或正式整局延迟保证。
-原始记录：`artifacts/profile.json`。复现：
+原始记录：`artifacts/profile.json`，对应 Git `879338d` 的历史规划器。下面命令在当前代码上测量当前实现，不复现历史 MPPI 的具体耗时：
 
 ```bash
 NUMBA_NUM_THREADS=16 uv run python scripts/profile_hotpaths.py artifacts/teacher3 artifacts/profile.json
@@ -48,7 +48,7 @@ NUMBA_NUM_THREADS=16 uv run python scripts/profile_hotpaths.py artifacts/teacher
 | 监督模型 + MPPI | 7.1532 | 34.65% | 1.97% | 0.00% | 278.17 |
 | TD(λ) 后贪心 | 8.6268 | 96.85% | 66.28% | 0.00% | 524.54 |
 
-TD 在三个种子上均改善正式测试的平均最大指数及 256/512 达成率；当前 shooting 与 MPPI 实现明显弱于贪心。所有评估均未出现 1024。这些结果不能支持“采样规划带来提升”的结论；规划退化的具体原因尚未经过诊断实验确认。
+TD 在三个种子上均改善正式测试的平均最大指数及 256/512 达成率；该轮优先级 shooting 与 MPPI 实现明显弱于贪心。所有评估均未出现 1024。这些结果不能支持“采样规划带来提升”的结论；规划退化的具体原因尚未经过诊断实验确认。
 
 | 种子 | 监督训练实际步数 | 选中的监督步数 | TD 实际步数 | 选中的 TD 步数 |
 |---|---:|---:|---:|---:|
@@ -66,7 +66,7 @@ seed 2 的监督训练在 70000 步触发早停；三个 TD 阶段均完成 1000
 - 最佳监督模型：`runs/full/seed{0,1,2}/supervised/best/`
 - 最佳 TD 模型：`runs/full/seed{0,1,2}/td/best/`
 
-完整教师和优化器恢复文件仍保存在远端 `/root/autodl-tmp/game2048-coursework`。本地同步的 best 模型只需 `model.json` 和 `params.msgpack` 即可独立推理。
+完整教师保存在当前服务器的 `/root/autodl-tmp/game2048-coursework`。完整实验记录和优化器恢复文件已同步到本地及当前服务器；best 模型只需 `model.json` 和 `params.msgpack` 即可独立推理。
 
 ## 2026-10-27 代码与文档整理
 
@@ -81,3 +81,99 @@ seed 2 的监督训练在 70000 步触发早停；三个 TD 阶段均完成 1000
   上述正式成绩与 GPU 测时仍对应首轮实验代码；保存的 12 组评估和全部模型 hash 核对通过。
 - 精简依赖后，Ruff、格式检查、ty 全部通过；15 项本地测试通过（38.63 秒）。
   另外加载了历史 seed 1 的 TD best 模型，确认仍能推理并通过八种 D₄ 变换的一致性检查。
+
+## 2026-10-27 服务器迁移
+
+- 当前服务器：`ssh -p 20147 root@connect.nmb1.seetacloud.com`；RTX 4090 24GB，容器配额 16 核、120GiB 内存。
+  项目路径仍为 `/root/autodl-tmp/game2048-coursework`，迁入代码基线为 `879338d`。
+- 从旧机迁入完整实验记录、六个 best 模型及训练恢复状态，共 133 个文件的 SHA-256 在本地和新机均核对一致。
+  旧服务器及其数据保留；历史 `runs/full/` 结果未改写。
+- 教师文件约 4.3GiB；实测复制从约 8MB/s 降至 1.5–2MB/s，因此停止复制并在新机重建。
+  完整构建与验证耗时 125.114 秒，41,325,017 个状态，Bellman 残差 0，内容哈希与旧机一致。
+  最终干净 uv 环境中又完成了一次全量教师验证。
+- 最终环境使用 uv 管理的 CPython 3.12.16，解释器位于
+  `/root/autodl-tmp/uv-python/cpython-3.12.16-linux-x86_64-gnu`。
+  依赖版本及哈希按现有 `uv.lock` 安装，未改动锁文件。清华源下载较慢，改用阿里镜像完成安装。
+  初次沿用 Conda 解释器遇到 `readline` 崩溃，已重建干净环境；最终测试直接使用标准 pytest。
+- JAX GPU 后端正常；Ruff、格式检查、ty 通过；15 项测试全部通过（52.99 秒）。
+  六个历史 best 模型均成功加载，并通过同一棋盘八种 D₄ 变换的价值一致性检查。
+  seed 1 的 TD best 完成 32 局贪心运行检查（种子 200000–200031）；这只是迁移验证，不是新的正式对照实验。
+- 迁移阶段没有修改 MPPI 算法；后续规划修正见下一节。
+
+核验报告：`artifacts/verification/migration-20261027.json`。
+文件清单：`artifacts/verification/migration-old-files.sha256`。
+最终测试日志：`logs/migration-tests.log`；教师日志：`logs/migration-teacher.log`、`logs/migration-teacher-uv-verify.log`。
+运行检查记录：`runs/migration-20261027/greedy/`。上述迁移证据已同步回本地。
+
+
+## 2026-10-27 网络反馈规划尝试（已停止扩跑）
+
+本轮修正了旧规划器中间动作不看网络的问题。保留四种推理模式：贪心、无扰动 rollout、
+网络价值偏置 shooting、MPPI。模拟每一步都评价合法 afterstate，偏置只影响动作，
+终局或叶子原始价值用于评分；MPPI 使用先验/提议分布修正，并以新情景复评候选。
+算法与接口详见 [README.md](README.md#网络反馈采样规划)。没有修改网络架构、训练目标或 TD 策略，也没有重新训练模型。
+
+### 实验设置与结果
+
+固定 `runs/full/seed0/td/best/`，参数 hash 为
+`236f0a05117eff2ac19ecd545025cedfb73fca600e2d9db7a02b7f65f2d69337`。
+每种方法运行相同的 256 个游戏种子 210000–210255。
+H=3；rollout 使用 384 个落子情景；MPPI 每根动作 K=16、R=8、I=2，
+偏置尺度 0.1、温度 0.1、更新率 0.5，最终以 32 个新情景复评。
+两种规划器的模拟轨迹预算约相同，但前向复用量不同。shooting 通过正确性检查，没有单独做成绩评估。
+
+| 256 局筛选 | 平均最大指数 | 256 达成率 | 512 达成率 | 1024 达成率 | 棋盘总和 | 执行时间 |
+|---|---:|---:|---:|---:|---:|---:|
+| 贪心 | 8.7305 | 98.05% | 75.39% | 0% | 530.70 | 0.30 s |
+| 无扰动 rollout | 8.6992 | 99.22% | 70.70% | 0% | 548.09 | 400.54 s |
+| MPPI | 8.6328 | 97.66% | 66.02% | 0% | 540.39 | 445.90 s |
+
+最大指数的逐游戏种子配对差值及 95% 正态近似区间：
+
+| 比较 | 平均差值 | 95% 区间 |
+|---|---:|---:|
+| rollout − 贪心 | −0.03125 | [−0.10473, 0.04223] |
+| MPPI − rollout | −0.06641 | [−0.13993, 0.00712] |
+| MPPI − 贪心 | −0.09766 | [−0.18048, −0.01484] |
+
+这组配置未观察到动作偏置搜索的收益；MPPI 对贪心出现负向信号，rollout 与贪心的差异尚不确定。
+预先规则只有在 MPPI 对 rollout 的区间下界大于零时才选择 MPPI，否则选择更简单的 rollout，
+因此选中了 rollout。这不是 rollout 已证明优于贪心的结论。
+本轮使用 TD 模型，旧优先级规划使用监督模型，不能把两轮成绩之差归因于规划器修正。
+表中贪心 batch=256、规划 batch=4；整局执行时间不等同于单请求延迟。
+
+### 停止情况
+
+2026-10-27 17:22（北京时间）根据用户决定停止正式扩跑，原因是筛选没有正向收益，
+继续扩大样本的预期价值不足以支持额外计算成本。正式阶段原本只会固定相同算法和参数，
+换用三个 TD best 和新的每组 2000 个游戏种子，并不会继续训练或改进规划器。
+
+- 完成了 seed 0 的 2000 局贪心基线（种子 300000–301999）：平均最大指数 8.637，256/512 达成率 97.4%/66.6%。
+- seed 0 rollout 停止前最后记录进度为 320/2000；没有发布该阶段的 `games.csv` 或 `metrics.json`，不作为正式成绩。
+- seed 1、seed 2 的新正式对照没有运行，不能报告三模型结论。
+- 正式评估与自动收尾进程均已停止；停止时确认 GPU 为 0 MiB、0% 利用率。没有关闭服务器。
+- 已完成数据为 768 条筛选记录和 2000 条贪心基线，共 2768 条；历史 `runs/full/`、模型和教师均保留。
+
+结果在 `runs/planner-feedback-v1/`：`selection.json` 保存筛选与选择依据，
+`interrupted.json` 保存主动停止信息，`verified_summary.json` 保存已完成记录的复算核验。
+`progress.json` 仅是进度，不是完成标记；没有完整正式 `results.json`。
+以后显式运行 `compare-planners` 会复用匹配的完成阶段并重新运行未完成阶段；本次清理不恢复实验。
+
+### 性能与验证记录
+
+整局检查发现首层重复前向后，增加 JAX 内去重：每根动作首层最多有 18 种落子结果，
+先评价不同状态，再还原原来的采样顺序与次数；跨候选和优化轮次也复用首层网络计算。
+现有 TD 模型、5 个历史非终局棋盘的预热后单次决策中位数为 greedy 2.44 ms、
+rollout 7.66 ms、MPPI 6.86 ms；优化前后两者分别为 12.82/7.66 ms、7.59/6.86 ms。
+这些是有限场景的开销检查，不代表成绩或整局吞吐保证。
+
+算法修改在本地和 GPU 服务器各通过 29 项测试，Ruff、格式和 ty 检查通过。
+检查点测试逐位核对保存前后的权重，并比较相同 JIT 路径输出，避免混用 eager/JIT 规约顺序。
+代码、算法测试和未选中的 MPPI/shooting 实现全部保留。
+
+- 实验运行时的代码指纹：`artifacts/verification/planner-feedback-source.json`。
+- 优化前后性能证据：`artifacts/verification/planner-feedback-profile-before-dedup.json`、`planner-feedback-profile.json`。
+- 测试证据：`logs/planner-feedback-tests-local.log`、`logs/planner-feedback-tests-final.log`。
+- 工作流日志：`logs/planner-feedback-workflow.log`；各评估日志在结果目录的 `logs/`。
+
+停止后清理：评估命令、缓存校验和显存不足重试统一到公共任务模块；逐模型与跨模型汇总共用一份配对差值计算；进度记录在编译结束后立即进入运行状态。MPPI、shooting、rollout、网络及规则的算法代码与筛选时一致。清理后本地 CPU 的 29 项测试通过（82.51 秒），Ruff、格式及 ty 通过；没有恢复实验或重新测量 GPU 性能。清理核验记录：`artifacts/verification/planner-feedback-cleanup-checks.json`。

@@ -1,4 +1,5 @@
 import hashlib
+import json
 import subprocess
 import sys
 from dataclasses import replace
@@ -9,7 +10,7 @@ import pytest
 from game2048 import evaluation
 from game2048.cli import make_parser
 from game2048.config import PlannerConfig
-from game2048.experiments import _cached_evaluation
+from game2048.evaluation_jobs import cached_evaluation
 from game2048.network import ValueNetwork
 
 
@@ -22,13 +23,14 @@ def test_cli_and_inference_imports_are_solver_free():
         [
             sys.executable,
             "-c",
-            "import sys; import game2048.evaluation; assert 'game2048.teacher' not in sys.modules",
+            "import sys; import game2048.evaluation; import game2048.comparison; "
+            "assert 'game2048.teacher' not in sys.modules",
         ],
         check=True,
     )
     parser = make_parser()
-    args = parser.parse_args(["replay", "model", "replay.json", "--exploration", "0.2"])
-    assert not hasattr(args, "games") and args.exploration == 0.2
+    args = parser.parse_args(["replay", "model", "replay.json", "--noise-std", "0.2"])
+    assert not hasattr(args, "games") and args.noise_std == 0.2
     with pytest.raises(SystemExit):
         parser.parse_args(["replay", "model", "replay.json", "--games", "2"])
 
@@ -43,6 +45,8 @@ def test_evaluation_completion_and_cache_validation(tmp_path, monkeypatch):
             return self
 
         def __call__(self, params, seeds):
+            progress = json.loads((directory / "progress.json").read_text())
+            assert progress["status"] == "running"
             n = len(seeds)
             return np.full(n, 8), np.full(n, 400), np.full(n, 180), np.zeros(n, bool)
 
@@ -66,20 +70,23 @@ def test_evaluation_completion_and_cache_validation(tmp_path, monkeypatch):
         output=directory,
         checkpoint_info=info,
     )
-    assert _cached_evaluation(directory, checkpoint, "mppi", 2, 50, planner) == metrics
-    assert _cached_evaluation(directory, checkpoint, "mppi", 3, 50, planner) is None
-    assert _cached_evaluation(directory, checkpoint, "mppi", 2, 51, planner) is None
+    assert cached_evaluation(directory, checkpoint, "mppi", 2, 50, planner) == metrics
+    old = {key: value for key, value in metrics.items() if key != "algorithm_version"}
+    (directory / "metrics.json").write_text(json.dumps(old))
+    assert cached_evaluation(directory, checkpoint, "mppi", 2, 50, planner) is None
+    (directory / "metrics.json").write_text(json.dumps(metrics))
+    assert cached_evaluation(directory, checkpoint, "mppi", 3, 50, planner) is None
+    assert cached_evaluation(directory, checkpoint, "mppi", 2, 51, planner) is None
     assert (
-        _cached_evaluation(directory, checkpoint, "mppi", 2, 50, replace(planner, horizon=4))
-        is None
+        cached_evaluation(directory, checkpoint, "mppi", 2, 50, replace(planner, horizon=5)) is None
     )
     (checkpoint / "params.msgpack").write_bytes(b"changed-weights")
-    assert _cached_evaluation(directory, checkpoint, "mppi", 2, 50, planner) is None
+    assert cached_evaluation(directory, checkpoint, "mppi", 2, 50, planner) is None
     (checkpoint / "params.msgpack").write_bytes(b"artifact-test-placeholder")
     (directory / "games.csv").write_text(
         "seed,max_exponent,max_tile,tile_sum,moves\n50,8,256,400,180\n"
     )
-    assert _cached_evaluation(directory, checkpoint, "mppi", 2, 50, planner) is None
+    assert cached_evaluation(directory, checkpoint, "mppi", 2, 50, planner) is None
 
     def interrupted_write(*args):
         raise OSError("Interrupted CSV write")

@@ -6,7 +6,7 @@ import json
 from dataclasses import asdict
 from pathlib import Path
 
-from game2048.config import PlannerConfig
+from game2048.config import INFERENCE_VERSIONS, PlannerConfig
 
 
 def make_parser() -> argparse.ArgumentParser:
@@ -54,12 +54,16 @@ def make_parser() -> argparse.ArgumentParser:
     experiment.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2])
     experiment.add_argument("--smoke", action="store_true")
 
+    comparison = commands.add_parser("compare-planners")
+    comparison.add_argument("experiment", type=Path)
+    comparison.add_argument("output", type=Path)
+
     planner_defaults = PlannerConfig()
     for name in ("evaluate", "replay"):
         sub = commands.add_parser(name)
         sub.add_argument("checkpoint", type=Path)
         sub.add_argument("output", type=Path)
-        sub.add_argument("--mode", default="greedy", choices=("greedy", "shooting", "mppi"))
+        sub.add_argument("--mode", default="greedy", choices=tuple(INFERENCE_VERSIONS))
         sub.add_argument("--seed", type=int, default=100_000)
         if name == "evaluate":
             sub.add_argument("--games", type=int, default=2000)
@@ -124,6 +128,10 @@ def main() -> None:
         from game2048.experiments import run_experiment
 
         result = run_experiment(args.teacher, args.output, args.seeds, args.smoke)
+    elif args.command == "compare-planners":
+        from game2048.comparison import compare_planners
+
+        result = compare_planners(args.experiment, args.output)
     else:
         from game2048.evaluation import evaluate, replay
         from game2048.network import load_model

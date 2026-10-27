@@ -1,7 +1,7 @@
 # Project conventions
 
 - Use Python for project code. NumPy, Numba, JAX and their compiled backends are allowed; do not add Rust, C++ or CUDA sources.
-- Use uv for Python environments and dependencies. Maintain pyproject.toml and uv.lock; run project commands with uv run.
+- Use clean uv environments and uv for dependency management. Maintain pyproject.toml and uv.lock; run project commands with uv run.
 - Use JAX for neural networks, GPU simulation and training.
 - Build and verify the complete reachable-state teacher before supervised training. Teacher lookups are read-only; missing states are errors, never triggers for search or approximate labels.
 - Inference must work without teacher files. Only game rules and neural network parameters may guide inference.

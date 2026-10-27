@@ -2,7 +2,7 @@
 
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import cast
+from typing import Protocol, cast
 
 import flax.linen as nn
 import jax
@@ -33,6 +33,12 @@ class ModelConfig:
     width: int = 32
     blocks: int = 2
     head_width: int = 64
+
+
+class ValueModel(Protocol):
+    """Minimal value interface, also usable by exact reference tests."""
+
+    def apply(self, variables, boards, /) -> object: ...
 
 
 class GroupConv(nn.Module):
@@ -90,13 +96,13 @@ class ValueNetwork(nn.Module):
         return jnp.where(jnp.max(boards, axis=(1, 2)) >= 10, 10.0, value)
 
 
-def action_values(model: ValueNetwork, params, board):
+def action_values(model: ValueModel, params, board):
     states, legal = afterstates(board)
     q = cast(jax.Array, model.apply({"params": params}, states))
     return jnp.where(legal, q, -jnp.inf), legal
 
 
-def greedy_action(model: ValueNetwork, params, board, key):
+def greedy_action(model: ValueModel, params, board, key):
     q, legal = action_values(model, params, board)
     ties = legal & (q == jnp.max(q))
     # Uniform tie breaking preserves equivariance in distribution.

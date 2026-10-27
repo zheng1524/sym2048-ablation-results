@@ -12,6 +12,7 @@ import numpy as np
 
 from game2048 import jax_env
 from game2048.artifacts import atomic_json
+from game2048.config import INFERENCE_VERSIONS
 from game2048.network import ModelConfig, ValueNetwork
 from game2048.planner import PlannerConfig, make_actor
 
@@ -71,9 +72,14 @@ def evaluate(
     runner = make_game_runner(model.config, mode, planner)
     seeds = np.arange(seed, seed + games, dtype=np.uint32)
     example = jnp.asarray(np.resize(seeds, batch_size))
+    if output is not None:
+        output.mkdir(parents=True, exist_ok=True)
+        atomic_json(output / "progress.json", {"status": "compiling", "games": 0, "total": games})
     started = time.monotonic()
     compiled = runner.lower(params, example).compile()
     compile_seconds = time.monotonic() - started
+    if output is not None:
+        atomic_json(output / "progress.json", {"status": "running", "games": 0, "total": games})
     records = []
     started = time.monotonic()
     for offset in range(0, games, batch_size):
@@ -92,10 +98,21 @@ def evaluate(
                     "moves": int(moves[i]),
                 }
             )
+        if output is not None and (offset // 64 != len(records) // 64 or len(records) == games):
+            atomic_json(
+                output / "progress.json",
+                {
+                    "status": "running",
+                    "games": len(records),
+                    "total": games,
+                    "execution_seconds": time.monotonic() - started,
+                },
+            )
     elapsed = time.monotonic() - started
     levels = np.array([r["max_exponent"] for r in records], dtype=np.float64)
     result = {
         "mode": mode,
+        "algorithm_version": INFERENCE_VERSIONS[mode],
         "games": games,
         "seed_start": seed,
         "mean_max_exponent": float(levels.mean()),
@@ -116,7 +133,6 @@ def evaluate(
         result["checkpoint_sha256"] = checkpoint_info["checkpoint_sha256"]
         result["checkpoint_metadata"] = checkpoint_info["checkpoint_metadata"]
     if output is not None:
-        output.mkdir(parents=True, exist_ok=True)
         # metrics.json is the completion marker: publish it only after the CSV.
         (output / "metrics.json").unlink(missing_ok=True)
         temporary = output / "games.csv.tmp"
@@ -126,6 +142,10 @@ def evaluate(
             writer.writerows(records)
         temporary.replace(output / "games.csv")
         atomic_json(output / "metrics.json", result)
+        atomic_json(
+            output / "progress.json",
+            {"status": "complete", "games": games, "total": games, "execution_seconds": elapsed},
+        )
     return result
 
 
@@ -151,6 +171,7 @@ def replay(
         {
             "seed": seed,
             "mode": mode,
+            "algorithm_version": INFERENCE_VERSIONS[mode],
             "planner": asdict(planner),
             "frames": frames,
             "terminal_board_exponents": np.asarray(board).tolist(),
