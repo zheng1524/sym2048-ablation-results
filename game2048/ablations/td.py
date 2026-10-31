@@ -12,6 +12,7 @@ from flax.training.train_state import TrainState
 from game2048 import jax_env
 from game2048.ablations.evaluation import evaluate
 from game2048.ablations.models import initialize, load_model, parameter_count, parameter_hash
+from game2048.ablations.optimization import batch_value_and_grad
 from game2048.ablations.provenance import source_identity
 from game2048.ablations.state import prepare, random_streams, read_recovery, take, write_recovery
 from game2048.artifacts import atomic_json
@@ -19,7 +20,7 @@ from game2048.network import greedy_action
 from game2048.training import _optimizer, lambda_returns
 
 
-def make_update(model, cfg):
+def make_update(model, cfg, microbatch_size):
     @jax.jit
     def update(state, boards, env_key, tie_key, reset_key):
         def transition(current, t):
@@ -47,13 +48,14 @@ def make_update(model, cfg):
         following = jnp.concatenate([values[1:], bootstrap[None]], axis=0)
         targets = lambda_returns(rewards, dones, following, bootstrap, cfg.trace_lambda)
 
-        def loss(params):
-            prediction = model.apply({"params": params}, afters.reshape(-1, 3, 3)).reshape(
-                cfg.horizon, cfg.envs
-            )
-            return jnp.mean((prediction - targets) ** 2)
-
-        error, grads = jax.value_and_grad(loss)(state.params)
+        error, grads = batch_value_and_grad(
+            model,
+            state.params,
+            afters.reshape(-1, 3, 3),
+            targets.reshape(-1),
+            jnp.ones(cfg.horizon * cfg.envs, jnp.bool_),
+            microbatch_size,
+        )
         return state.apply_gradients(grads=grads), boards, error
 
     return update
@@ -126,7 +128,7 @@ def train(output, *, group, seed, spec, protocol, upstream=None, resume=False, s
         state, streams, boards, pool, best_params, info = read_recovery(checkpoint, state, request)
     if (output / "complete.json").exists() and int(state.step) != cfg.updates:
         raise ValueError("Invalid TD completion marker")
-    update = make_update(model, cfg)
+    update = make_update(model, cfg, protocol.gradient_microbatch_size)
     started = time.monotonic()
     previous_seconds = info["elapsed_seconds"]
     compiling = time.monotonic()

@@ -1,0 +1,124 @@
+{
+  "source": {
+    "commit": "6eb6db44f0a3d70c15b92b5200404bb2b033d686",
+    "source_sha256": "7718db25da91a1107a62be482e008c519bb7de22c248306deaef03e1f7766bb0",
+    "files": {
+      "game2048/__init__.py": "c0f355425f50b8d928a9a6d9fb3de71b03758386c13354ba38470a3e52bbea0f",
+      "game2048/__main__.py": "013a4ca61daf29cbdaefc91c1f1d76b4b77de1f7a2120d3a071cbe49669bf05e",
+      "game2048/ablations/__init__.py": "cd6733d7bc45b0fb4f488b1bf47d7095c817c82c3fa2f12b2c042db44bd8ac9f",
+      "game2048/ablations/__main__.py": "377479a3e3e5702d82129487b7a6ea711ff9ce9d8a504c53d9741078b96345e1",
+      "game2048/ablations/audit.py": "774844e3fb5af954b0f8b4e13ca69fad9bf9627daf143d9f646ad0c398a0158e",
+      "game2048/ablations/config.py": "4b4247a4b04829d15e9d735b6105c662b2775e70ab66b0d59176f06dc68c7505",
+      "game2048/ablations/evaluation.py": "6fa9b080a6e139f1b03e7131f4aa46de1a262f45ffb1da557493e3c239574dda",
+      "game2048/ablations/models.py": "f045b1aa1f4eef4b5dc89e990b1c13f029ad9d2f27ffa273deec8293fb35e280",
+      "game2048/ablations/provenance.py": "18a7ec22d47258e814c821f705249c1d59f66461737f5dfe36b76edb074b2256",
+      "game2048/ablations/state.py": "08d6472e9bc8066cf3dc7b31cb1759cbde71556a9a71245ec5cbe29e49039a2b",
+      "game2048/ablations/summary.py": "e7215770960d8da9d01aab317743ada7d81dac8cba413009cdec86b2871abaa2",
+      "game2048/ablations/supervised.py": "e47be13dd30d466f4a9712441748ce0c901566fc02247b360f297fe4b4c485d2",
+      "game2048/ablations/td.py": "dd439d701386b8e71f0ee60ac41fcb46e99a1bf8e8634889dd66a1ee19be7a45",
+      "game2048/ablations/workflow.py": "06932ffdfb3e1ea7d6d7d2da0c5962519cfb4ad07ebfc35d88330f46b32d0571",
+      "game2048/artifacts.py": "159fd166999279a6c4a485eaad011e852aa22fdacb110f2c941bc85f09c9e017",
+      "game2048/cli.py": "935e7bfa69ee5bf79927af4993699074117de4c5d553e7e622dad0488de6482b",
+      "game2048/comparison.py": "d99298d3ec54d2b762920f56449af3c7b67823e6aca453047ddcd26e95dbcfb6",
+      "game2048/config.py": "dc2af5d89ccaad0325d27118f46224ea02520197f6104c9fce1598911b495868",
+      "game2048/envs/__init__.py": "5f636563cf74f6c23ad36089be4262e26c8e2a9171c07ee73423bf23a2b85506",
+      "game2048/envs/game2048.py": "79fc54c4a41067c7543d7269b40413dd0491d799dd75bf7a43fb7b97ea747f37",
+      "game2048/evaluation.py": "048ceec5d2ae77821f7a29445acafdfb01637c8938a11036f9b7783a50b31f43",
+      "game2048/evaluation_jobs.py": "c4da349023d51b4d294a871ac6d6bfb7c2a678604086af3f127a14c1eec55296",
+      "game2048/experiments.py": "b9ced9405895fcd06556d8714014f06127f41f6e6879e98929e20ca472e8b536",
+      "game2048/jax_env.py": "496b1362c935382e6f6aae5e805758cac393b1f67dd9b002a9b2824802947b3e",
+      "game2048/kernels.py": "6c58015d5b53f73dcc50a61d6eb13bdfc5ef442cc9d3feac30b7223453ba2155",
+      "game2048/network.py": "e4f9aa99bbb31f91668963f848c02b63054ca012a4f3a6d1d732f256d19e7c38",
+      "game2048/planner.py": "bc43cce48190eabc6da4f2d1d8c7a1268a5ac071e85560c9e536879cdde8850a",
+      "game2048/rules.py": "cb95a794cd04b202062d294651f56417125f104c9eeddbd73229e45508581e28",
+      "game2048/teacher.py": "cd7db3788a35fe480354b9c652022185e187763d4385df1d715b2c88118e072f",
+      "game2048/training.py": "9037c4931ad78012c89b64ddc4ba823b85e0e1e9b314d10800704fc9b022540c",
+      "game2048/wrappers/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pyproject.toml": "21aab38a23f0fb366931ec8bacee4a5208a8bdaac42abc260ffe69399b47b765",
+      "uv.lock": "b6a0e3843cfd0ccf4e08348f40ec95750e16da181c6cba5ce762e56ca0b42e2e"
+    }
+  },
+  "platform": "Linux-5.15.0-139-generic-x86_64-with-glibc2.31",
+  "devices": [
+    "cuda:0"
+  ],
+  "jax_version": "0.12.0.1",
+  "batch_size": 4096,
+  "models": {
+    "d4": {
+      "spec": {
+        "architecture": "d4",
+        "width": 32,
+        "blocks": 2,
+        "head_width": 64
+      },
+      "parameter_count": 304833,
+      "timing": {
+        "forward": {
+          "compile_seconds": 1.2629880549939116,
+          "execution_seconds": [
+            0.03422539999883156,
+            0.03414653000072576,
+            0.03373391799686942
+          ],
+          "afterstates_per_second": 119953.6233963727
+        },
+        "forward_backward": {
+          "compile_seconds": 2.9932992410031147,
+          "execution_seconds": [
+            0.08597299100074451,
+            0.08714038599282503,
+            0.08560386700264644
+          ],
+          "afterstates_per_second": 47642.86960732271
+        }
+      },
+      "initial_orbit_max_range": 0.0001085139811038971
+    },
+    "plain": {
+      "spec": {
+        "architecture": "plain",
+        "width": 83,
+        "blocks": 2,
+        "head_width": 64
+      },
+      "parameter_count": 305403,
+      "timing": {
+        "forward": {
+          "compile_seconds": 0.9235355569981039,
+          "execution_seconds": [
+            0.005114977000630461,
+            0.005105973003082909,
+            0.005733370009693317
+          ],
+          "afterstates_per_second": 800785.6143820658
+        },
+        "forward_backward": {
+          "compile_seconds": 2.5412490169983357,
+          "execution_seconds": [
+            0.018555725007900037,
+            0.020001690005301498,
+            0.021734184003435075
+          ],
+          "afterstates_per_second": 204782.69580792147
+        }
+      },
+      "initial_orbit_max_range": 1.49180269241333
+    }
+  },
+  "initializations": {
+    "0": {
+      "A": "0b4d85de60ce262bad66af79f556a52508e4e0e3dd5c5c974a3083922e267d5f",
+      "B": "0b4d85de60ce262bad66af79f556a52508e4e0e3dd5c5c974a3083922e267d5f"
+    },
+    "1": {
+      "A": "04caf0d7a3ab63aa64acc9a7c54e1458d5fa99e151495608eb9a0d2f2ba78335",
+      "B": "04caf0d7a3ab63aa64acc9a7c54e1458d5fa99e151495608eb9a0d2f2ba78335"
+    },
+    "2": {
+      "A": "37c9fab9bcc755fb0d009d9ddcc29d327714aedbf32c8a5ebee0d06c287d5fbb",
+      "B": "37c9fab9bcc755fb0d009d9ddcc29d327714aedbf32c8a5ebee0d06c287d5fbb"
+    }
+  },
+  "parameter_relative_difference": 0.001869876292921042
+}

@@ -1,0 +1,12 @@
+{
+  "scope": "Single-update memory preflight only; no formal outcome or convergence claim.",
+  "supervised_batch_decisions": 1024,
+  "td_transitions_per_update": 4096,
+  "gradient_microbatch_afterstates": 512,
+  "shared_initial_hash": "0b4d85de60ce262bad66af79f556a52508e4e0e3dd5c5c974a3083922e267d5f",
+  "supervised_execution_seconds": 0.22012764499231707,
+  "td_execution_seconds": 0.5768882539996412,
+  "supervised_compile_seconds": 3.614299373002723,
+  "td_compile_seconds": 4.441060565994121,
+  "actual_updates_each": 1
+}

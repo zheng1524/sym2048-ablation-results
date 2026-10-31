@@ -21,6 +21,7 @@ from game2048.ablations.models import (
     parameter_hash,
     save_model,
 )
+from game2048.ablations.optimization import batch_value_and_grad
 from game2048.ablations.provenance import claim
 from game2048.ablations.state import random_streams, take
 from game2048.ablations.supervised import augment, masked_loss, supervised_batch
@@ -35,6 +36,7 @@ def tiny_protocol():
         validation_games=2,
         test_games=2,
         evaluation_batch=2,
+        gradient_microbatch_size=3,
         td=replace(p.td, updates=3, validation_every=2),
     )
 
@@ -203,6 +205,28 @@ def test_refuse_unrecognized_output_and_incompatible_protocol(tmp_path):
         claim(tmp_path, "request.json", {})
     with pytest.raises(ValueError, match="overlap"):
         replace(protocol(), test_seed=400_001)
+
+
+@pytest.mark.parametrize("architecture", ["d4", "plain"])
+def test_microbatch_preserves_full_loss_and_gradient(architecture):
+    model, params = initialize(ModelSpec(architecture, 3, 1, 5), 2)
+    boards = jax.random.randint(jax.random.PRNGKey(8), (19, 3, 3), 0, 10)
+    target = jnp.linspace(6.0, 9.0, 19)
+    valid = jnp.arange(19) % 3 != 0
+    full = jax.jit(
+        lambda p: jax.value_and_grad(
+            lambda q: masked_loss(model.apply({"params": q}, boards), target, valid)
+        )(p)
+    )(params)
+    split = jax.jit(lambda p: batch_value_and_grad(model, p, boards, target, valid, 4))(params)
+    for a, b in zip(jax.tree.leaves(full), jax.tree.leaves(split), strict=True):
+        np.testing.assert_allclose(a, b, rtol=1e-3, atol=3e-4)
+    # Empty/invalid pieces, including padding, contribute no gradient or denominator.
+    empty = jax.jit(
+        lambda p: batch_value_and_grad(model, p, boards, target, jnp.zeros(19, jnp.bool_), 4)
+    )(params)
+    for leaf in jax.tree.leaves(empty):
+        np.testing.assert_array_equal(leaf, 0.0)
 
 
 def test_supervised_pool_resume_and_upstream_hash_guard(tmp_path, monkeypatch):

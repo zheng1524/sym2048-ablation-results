@@ -27,6 +27,17 @@ A incurs additional teacher and supervised costs: A−B matches online TD budget
 not total computation. A−C matches training algorithms/budgets and parameter counts,
 not FLOPs, elapsed time, or the adaptively collected student states.
 
+The local 6GB GPU could not fit a monolithic formal supervision update together
+with the teacher arrays (recorded RESOURCE_EXHAUSTED preflight). All groups therefore
+use the same gradient accumulation implementation with 512 scalar afterstates per
+piece. The full decision batch remains 1024 (up to 4096 afterstates), and TD still
+collects 128×32=4096 transitions per update. Pieces divide by the **full** valid
+sample count; summed gradients receive one global clip and one AdamW update.
+Sampling, augmentation, rewards and the number of updates are unchanged. This is
+algebraically the full-batch loss; floating-point reduction order can differ.
+Tests compare full versus accumulated losses/gradients, including masks and padding.
+The microbatch setting is frozen in the protocol and included in resume checks.
+
 PlainValueNetwork has one-hot input, ordinary SAME convolutions (stem and two
 two-convolution residual blocks), matching LayerNorm/SiLU locations, ordered
 3×3 flatten, Dense(64)/SiLU/Dense(1). It has no group convolution, symmetry pooling,

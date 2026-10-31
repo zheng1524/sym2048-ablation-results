@@ -1,0 +1,1 @@
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 1, 'loss': 0.8900392055511475}

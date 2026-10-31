@@ -57,6 +57,7 @@ class Protocol:
     test_seed: int = 500_000
     test_games: int = 2000
     evaluation_batch: int = 256
+    gradient_microbatch_size: int = 512
     supervised: SupervisedConfig = field(default_factory=SupervisedConfig)
     td: TDConfig = field(default_factory=TDConfig)
     version: str = VERSION
@@ -72,7 +73,15 @@ class Protocol:
                     raise ValueError(f"{name} must be positive")
         if not 0 <= self.td.trace_lambda <= 1 or self.supervised.warmup_updates < 0:
             raise ValueError("Invalid lambda or warmup")
-        if min(self.validation_games, self.test_games, self.evaluation_batch) < 1:
+        if (
+            min(
+                self.validation_games,
+                self.test_games,
+                self.evaluation_batch,
+                self.gradient_microbatch_size,
+            )
+            < 1
+        ):
             raise ValueError("Evaluation counts must be positive")
         if set(range(self.validation_seed, self.validation_seed + self.validation_games)) & set(
             range(self.test_seed, self.test_seed + self.test_games)

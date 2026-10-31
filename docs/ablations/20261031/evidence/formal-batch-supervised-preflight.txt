@@ -1,0 +1,36 @@
+W1031 18:04:23.469853  161344 bfc_allocator.cc:743] Allocator (GPU_0_bfc) ran out of memory trying to allocate 2.80GiB (rounded to 3009745408) from the lower end requested by op 
+If this is caused by memory fragmentation, the environment variable 'TF_GPU_ALLOCATOR=cuda_malloc_async' may improve the situation.
+Current allocation summary follows.
+W1031 18:04:23.470298  161344 bfc_allocator.cc:754] *****___*************_____________________________****************_________________________________*
+Traceback (most recent call last):
+  File "/home/liu/other/sym2048-ablation/game2048/ablations/supervised.py", line 201, in train
+    jax.block_until_ready(loss)
+  File "/home/liu/other/sym2048-ablation/.venv/lib/python3.12/site-packages/jax/_src/api.py", line 2808, in block_until_ready
+    try_to_block(arrays[0])
+  File "/home/liu/other/sym2048-ablation/.venv/lib/python3.12/site-packages/jax/_src/api.py", line 2791, in try_to_block
+    return x.block_until_ready()
+           ^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 2.80GiB with allocator GPU_0_bfc on device 0. [executable_name='jit_update'] [tf-allocator-allocation-error='']
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/liu/other/sym2048-ablation/game2048/ablations/__main__.py", line 104, in <module>
+    main()
+  File "/home/liu/other/sym2048-ablation/game2048/ablations/__main__.py", line 70, in main
+    train(args.teacher, args.output, **options)
+  File "/home/liu/other/sym2048-ablation/game2048/ablations/supervised.py", line 260, in train
+    "observed_step": int(state.step),
+                     ^^^^^^^^^^^^^^^
+  File "/home/liu/other/sym2048-ablation/.venv/lib/python3.12/site-packages/jax/_src/array.py", line 344, in __int__
+    return self._value.__int__()
+           ^^^^^^^^^^^
+  File "/home/liu/other/sym2048-ablation/.venv/lib/python3.12/site-packages/jax/_src/profiler.py", line 588, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/liu/other/sym2048-ablation/.venv/lib/python3.12/site-packages/jax/_src/array.py", line 696, in _value
+    npy_value, did_copy = self._to_np_array_did_copy()
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 2.80GiB with allocator GPU_0_bfc on device 0. [tf-allocator-allocation-error=''] [executable_name='jit_update']

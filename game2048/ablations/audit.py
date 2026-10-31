@@ -10,6 +10,7 @@ import numpy as np
 
 from game2048.ablations.config import ModelSpec
 from game2048.ablations.models import initialize, parameter_count, parameter_hash
+from game2048.ablations.optimization import batch_value_and_grad
 from game2048.ablations.provenance import source_identity
 from game2048.artifacts import atomic_json
 from game2048.rules import permutations_d4
@@ -22,7 +23,9 @@ def profile_functions(model):
 
     @jax.jit
     def backward(p, x):
-        return jax.value_and_grad(lambda q: jnp.mean((model.apply({"params": q}, x) - 8) ** 2))(p)
+        return batch_value_and_grad(
+            model, p, x, jnp.full(len(x), 8.0, jnp.float32), jnp.ones(len(x), jnp.bool_), 512
+        )
 
     return forward, backward
 
@@ -39,6 +42,7 @@ def audit(output, batch_size=4096):
         "devices": [str(d) for d in jax.devices()],
         "jax_version": jax.__version__,
         "batch_size": batch_size,
+        "gradient_microbatch_size": 512,
         "models": {},
         "initializations": {},
     }

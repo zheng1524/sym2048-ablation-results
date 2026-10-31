@@ -11,6 +11,7 @@ from flax.training.train_state import TrainState
 from game2048 import jax_env
 from game2048.ablations.evaluation import evaluate
 from game2048.ablations.models import initialize, parameter_count, parameter_hash
+from game2048.ablations.optimization import batch_value_and_grad
 from game2048.ablations.provenance import source_identity
 from game2048.ablations.state import (
     prepare,
@@ -76,7 +77,7 @@ def sample_rows(arrays, key, count):
     return order[starts[groups] + offsets]
 
 
-def make_update(model, cfg):
+def make_update(model, cfg, microbatch_size):
     @jax.jit
     def update(state, sample_key, augment_key, arrays, pool, pool_count):
         key1, key2 = jax.random.split(sample_key)
@@ -87,10 +88,7 @@ def make_update(model, cfg):
         )
         x, target, valid = supervised_batch(*arrays[:3], rows, augment_key)
 
-        def loss(p):
-            return masked_loss(model.apply({"params": p}, x), target, valid)
-
-        value, grads = jax.value_and_grad(loss)(state.params)
+        value, grads = batch_value_and_grad(model, state.params, x, target, valid, microbatch_size)
         return state.apply_gradients(grads=grads), value
 
     return update
@@ -152,7 +150,7 @@ def train(teacher_dir, output, *, group, seed, spec, protocol, resume=False, sto
         raise ValueError("Invalid supervised completion marker")
     arrays = _teacher_arrays(teacher)
     pool_device = jnp.asarray(pool)
-    update = make_update(model, cfg)
+    update = make_update(model, cfg, protocol.gradient_microbatch_size)
     collector = _make_collection(model, cfg.collection_envs, cfg.collection_steps)
     label_validation = make_label_validation(model, cfg.batch_size)
     started = time.monotonic()

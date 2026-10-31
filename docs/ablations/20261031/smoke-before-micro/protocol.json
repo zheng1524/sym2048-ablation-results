@@ -1,0 +1,31 @@
+{
+  "seeds": [
+    0
+  ],
+  "smoke": true,
+  "validation_seed": 400000,
+  "validation_games": 4,
+  "test_seed": 500000,
+  "test_games": 4,
+  "evaluation_batch": 4,
+  "supervised": {
+    "batch_size": 8,
+    "learning_rate": 0.0003,
+    "max_updates": 3,
+    "warmup_updates": 1,
+    "validation_every": 1,
+    "collect_every": 1,
+    "collection_envs": 2,
+    "collection_steps": 2,
+    "pool_capacity": 16
+  },
+  "td": {
+    "updates": 2,
+    "learning_rate": 3e-05,
+    "trace_lambda": 0.8,
+    "envs": 2,
+    "horizon": 2,
+    "validation_every": 1
+  },
+  "version": "distillation-d4-20261031-v1"
+}

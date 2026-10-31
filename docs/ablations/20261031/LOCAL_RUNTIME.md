@@ -46,6 +46,8 @@ to `/dev/shm/sym2048-ablations-teacher-intermediates.tar.gz`. This is RAM-backed
 storage; the active teacher does not depend on that archive, and its durable root
 arrays and manifest remain in the experiment directory. The archive should be
 copied back to durable storage once space is available.
+After disk cleanup increased the available space, the archive was restored to the
+durable teacher directory, its SHA256 checked again, and the RAM copy removed.
 
 The disk was initially 97% full. A first full check attempt encountered disk
 exhaustion, and smoke was subsequently resumed after another disk exhaustion;
