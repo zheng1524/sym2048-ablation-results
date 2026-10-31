@@ -1,0 +1,19 @@
+{
+  "rules_version": 1,
+  "size": 3,
+  "objective": "expected_terminal_max_exponent",
+  "spawn_probabilities": [
+    0.9,
+    0.1
+  ],
+  "includes_post_maximum_states": true,
+  "enumerated_through": 2040,
+  "enumeration_complete": true,
+  "solve_complete": true,
+  "verified": true,
+  "states": 41325017,
+  "index_capacity": 134217728,
+  "bellman_residual": 0.0,
+  "content_sha256": "6a66f3b52bd5bef3e270c777e4da063cae7e7038a0c5c858eb7bb7274466fc8e",
+  "verified_states": 41325017
+}

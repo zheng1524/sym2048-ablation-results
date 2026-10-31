@@ -1,0 +1,7 @@
+{
+  "archive": "/dev/shm/sym2048-ablations-teacher-intermediates.tar.gz",
+  "sha256": "6cafa58bbbbab6f46392c6c8a948d39d4934ebfb99654133375a4d0b23a42e81",
+  "verification": "tar --compare passed before removal of duplicate intermediates",
+  "bytes": 530543703,
+  "storage_note": "Temporary RAM-backed staging to relieve disk pressure; copy back to durable storage when space permits."
+}

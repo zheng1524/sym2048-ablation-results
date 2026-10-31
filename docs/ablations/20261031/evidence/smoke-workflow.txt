@@ -1,0 +1,42 @@
+{"stage": "d4_scratch_td-seed0-td", "arguments": ["stage", "--phase", "td", "--output", "runs/ablations-20261031-smoke/d4_scratch_td/seed0/td", "--group", "d4_scratch_td", "--seed", "0", "--protocol-file", "runs/ablations-20261031-smoke/protocol.json"]}
+{"stage": "d4_scratch_td-seed1-td", "arguments": ["stage", "--phase", "td", "--output", "runs/ablations-20261031-smoke/d4_scratch_td/seed1/td", "--group", "d4_scratch_td", "--seed", "1", "--protocol-file", "runs/ablations-20261031-smoke/protocol.json"]}
+{"stage": "d4_scratch_td-seed2-td", "arguments": ["stage", "--phase", "td", "--output", "runs/ablations-20261031-smoke/d4_scratch_td/seed2/td", "--group", "d4_scratch_td", "--seed", "2", "--protocol-file", "runs/ablations-20261031-smoke/protocol.json"]}
+{"stage": "d4_distill_td-seed0-supervised", "arguments": ["stage", "--phase", "supervised", "--teacher", "artifacts/ablations-20261031-teacher", "--output", "runs/ablations-20261031-smoke/d4_distill_td/seed0/supervised", "--group", "d4_distill_td", "--seed", "0", "--protocol-file", "runs/ablations-20261031-smoke/protocol.json"]}
+{"stage": "d4_distill_td-seed0-td", "arguments": ["stage", "--phase", "td", "--output", "runs/ablations-20261031-smoke/d4_distill_td/seed0/td", "--group", "d4_distill_td", "--seed", "0", "--protocol-file", "runs/ablations-20261031-smoke/protocol.json", "--upstream", "runs/ablations-20261031-smoke/d4_distill_td/seed0/supervised/best"]}
+{"stage": "d4_distill_td-seed1-supervised", "arguments": ["stage", "--phase", "supervised", "--teacher", "artifacts/ablations-20261031-teacher", "--output", "runs/ablations-20261031-smoke/d4_distill_td/seed1/supervised", "--group", "d4_distill_td", "--seed", "1", "--protocol-file", "runs/ablations-20261031-smoke/protocol.json"]}
+{"stage": "d4_distill_td-seed1-td", "arguments": ["stage", "--phase", "td", "--output", "runs/ablations-20261031-smoke/d4_distill_td/seed1/td", "--group", "d4_distill_td", "--seed", "1", "--protocol-file", "runs/ablations-20261031-smoke/protocol.json", "--upstream", "runs/ablations-20261031-smoke/d4_distill_td/seed1/supervised/best"]}
+{"stage": "d4_distill_td-seed2-supervised", "arguments": ["stage", "--phase", "supervised", "--teacher", "artifacts/ablations-20261031-teacher", "--output", "runs/ablations-20261031-smoke/d4_distill_td/seed2/supervised", "--group", "d4_distill_td", "--seed", "2", "--protocol-file", "runs/ablations-20261031-smoke/protocol.json"]}
+{"stage": "d4_distill_td-seed2-td", "arguments": ["stage", "--phase", "td", "--output", "runs/ablations-20261031-smoke/d4_distill_td/seed2/td", "--group", "d4_distill_td", "--seed", "2", "--protocol-file", "runs/ablations-20261031-smoke/protocol.json", "--upstream", "runs/ablations-20261031-smoke/d4_distill_td/seed2/supervised/best"]}
+{"stage": "plain_distill_td-seed0-supervised", "arguments": ["stage", "--phase", "supervised", "--teacher", "artifacts/ablations-20261031-teacher", "--output", "runs/ablations-20261031-smoke/plain_distill_td/seed0/supervised", "--group", "plain_distill_td", "--seed", "0", "--protocol-file", "runs/ablations-20261031-smoke/protocol.json"]}
+{"stage": "plain_distill_td-seed0-td", "arguments": ["stage", "--phase", "td", "--output", "runs/ablations-20261031-smoke/plain_distill_td/seed0/td", "--group", "plain_distill_td", "--seed", "0", "--protocol-file", "runs/ablations-20261031-smoke/protocol.json", "--upstream", "runs/ablations-20261031-smoke/plain_distill_td/seed0/supervised/best"]}
+{"stage": "plain_distill_td-seed1-supervised", "arguments": ["stage", "--phase", "supervised", "--teacher", "artifacts/ablations-20261031-teacher", "--output", "runs/ablations-20261031-smoke/plain_distill_td/seed1/supervised", "--group", "plain_distill_td", "--seed", "1", "--protocol-file", "runs/ablations-20261031-smoke/protocol.json"]}
+{"stage": "plain_distill_td-seed1-td", "arguments": ["stage", "--phase", "td", "--output", "runs/ablations-20261031-smoke/plain_distill_td/seed1/td", "--group", "plain_distill_td", "--seed", "1", "--protocol-file", "runs/ablations-20261031-smoke/protocol.json", "--upstream", "runs/ablations-20261031-smoke/plain_distill_td/seed1/supervised/best"]}
+{"stage": "plain_distill_td-seed2-supervised", "arguments": ["stage", "--phase", "supervised", "--teacher", "artifacts/ablations-20261031-teacher", "--output", "runs/ablations-20261031-smoke/plain_distill_td/seed2/supervised", "--group", "plain_distill_td", "--seed", "2", "--protocol-file", "runs/ablations-20261031-smoke/protocol.json"]}
+Traceback (most recent call last):
+  File "/home/liu/other/sym2048-ablation/game2048/ablations/workflow.py", line 29, in stage
+    completed.check_returncode()
+  File "/home/liu/.local/share/uv/python/cpython-3.12.16-linux-x86_64-gnu/lib/python3.12/subprocess.py", line 502, in check_returncode
+    raise CalledProcessError(self.returncode, self.args, self.stdout,
+subprocess.CalledProcessError: Command '['/home/liu/other/sym2048-ablation/.venv/bin/python', '-m', 'game2048.ablations', 'stage', '--phase', 'supervised', '--teacher', 'artifacts/ablations-20261031-teacher', '--output', 'runs/ablations-20261031-smoke/plain_distill_td/seed2/supervised', '--group', 'plain_distill_td', '--seed', '2', '--protocol-file', 'runs/ablations-20261031-smoke/protocol.json']' returned non-zero exit status 1.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/liu/other/sym2048-ablation/game2048/ablations/__main__.py", line 104, in <module>
+    main()
+  File "/home/liu/other/sym2048-ablation/game2048/ablations/__main__.py", line 50, in main
+    execute(args.teacher, args.output, cfg, args.groups)
+  File "/home/liu/other/sym2048-ablation/game2048/ablations/workflow.py", line 73, in run
+    stage(output, f"{group}-seed{seed}-supervised", args)
+  File "/home/liu/other/sym2048-ablation/game2048/ablations/workflow.py", line 36, in stage
+    atomic_json(path, timings)
+  File "/home/liu/other/sym2048-ablation/game2048/artifacts.py", line 16, in atomic_json
+    atomic_bytes(path, content.encode("utf-8"))
+  File "/home/liu/other/sym2048-ablation/game2048/artifacts.py", line 10, in atomic_bytes
+    temporary.write_bytes(content)
+  File "/home/liu/.local/share/uv/python/cpython-3.12.16-linux-x86_64-gnu/lib/python3.12/pathlib.py", line 1036, in write_bytes
+    with self.open(mode='wb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 28] No space left on device

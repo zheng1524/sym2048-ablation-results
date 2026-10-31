@@ -1,0 +1,5 @@
+WARN Retry attempt #0. Sleeping 1.613219011s before the next attempt
+WARN Retry attempt #1. Sleeping 1.314698111s before the next attempt
+Resolved 1 package in 22.47s
+WARN Retry attempt #0. Sleeping 1.965301452s before the next attempt
+Downloading nvidia-cudnn-cu12 (674.0MiB)

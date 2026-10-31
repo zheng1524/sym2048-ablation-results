@@ -1,0 +1,122 @@
+{
+  "protocol": {
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "smoke": true,
+    "validation_seed": 400000,
+    "validation_games": 4,
+    "test_seed": 500000,
+    "test_games": 4,
+    "evaluation_batch": 4,
+    "supervised": {
+      "batch_size": 8,
+      "learning_rate": 0.0003,
+      "max_updates": 3,
+      "warmup_updates": 1,
+      "validation_every": 1,
+      "collect_every": 1,
+      "collection_envs": 2,
+      "collection_steps": 2,
+      "pool_capacity": 16
+    },
+    "td": {
+      "updates": 2,
+      "learning_rate": 3e-05,
+      "trace_lambda": 0.8,
+      "envs": 2,
+      "horizon": 2,
+      "validation_every": 1
+    },
+    "version": "distillation-d4-20261031-v1"
+  },
+  "groups": [
+    "d4_distill_td",
+    "d4_scratch_td",
+    "plain_distill_td"
+  ],
+  "source": {
+    "commit": "6eb6db44f0a3d70c15b92b5200404bb2b033d686",
+    "source_sha256": "817e0a03486c266c38611c0fd3fe2dd381f6d012b7dada3dc6786487aa7ccf55",
+    "files": {
+      "game2048/__init__.py": "c0f355425f50b8d928a9a6d9fb3de71b03758386c13354ba38470a3e52bbea0f",
+      "game2048/__main__.py": "013a4ca61daf29cbdaefc91c1f1d76b4b77de1f7a2120d3a071cbe49669bf05e",
+      "game2048/ablations/__init__.py": "cd6733d7bc45b0fb4f488b1bf47d7095c817c82c3fa2f12b2c042db44bd8ac9f",
+      "game2048/ablations/__main__.py": "377479a3e3e5702d82129487b7a6ea711ff9ce9d8a504c53d9741078b96345e1",
+      "game2048/ablations/audit.py": "774844e3fb5af954b0f8b4e13ca69fad9bf9627daf143d9f646ad0c398a0158e",
+      "game2048/ablations/config.py": "4b4247a4b04829d15e9d735b6105c662b2775e70ab66b0d59176f06dc68c7505",
+      "game2048/ablations/evaluation.py": "47024c438284ab5444b422c5e12a0f7d0b672350554a984a965cde11ae0560dc",
+      "game2048/ablations/models.py": "f045b1aa1f4eef4b5dc89e990b1c13f029ad9d2f27ffa273deec8293fb35e280",
+      "game2048/ablations/provenance.py": "b925eac3df237d8db4c59327028e283a01e6640736c6db0f10f226a7807dda3c",
+      "game2048/ablations/state.py": "08d6472e9bc8066cf3dc7b31cb1759cbde71556a9a71245ec5cbe29e49039a2b",
+      "game2048/ablations/summary.py": "e7215770960d8da9d01aab317743ada7d81dac8cba413009cdec86b2871abaa2",
+      "game2048/ablations/supervised.py": "e47be13dd30d466f4a9712441748ce0c901566fc02247b360f297fe4b4c485d2",
+      "game2048/ablations/td.py": "dd439d701386b8e71f0ee60ac41fcb46e99a1bf8e8634889dd66a1ee19be7a45",
+      "game2048/ablations/workflow.py": "12524b7c896e8fe3cb5075f0ad16172b213ec5d09f8da9d8817fcb014f44063e",
+      "game2048/artifacts.py": "159fd166999279a6c4a485eaad011e852aa22fdacb110f2c941bc85f09c9e017",
+      "game2048/cli.py": "935e7bfa69ee5bf79927af4993699074117de4c5d553e7e622dad0488de6482b",
+      "game2048/comparison.py": "d99298d3ec54d2b762920f56449af3c7b67823e6aca453047ddcd26e95dbcfb6",
+      "game2048/config.py": "dc2af5d89ccaad0325d27118f46224ea02520197f6104c9fce1598911b495868",
+      "game2048/envs/__init__.py": "5f636563cf74f6c23ad36089be4262e26c8e2a9171c07ee73423bf23a2b85506",
+      "game2048/envs/game2048.py": "79fc54c4a41067c7543d7269b40413dd0491d799dd75bf7a43fb7b97ea747f37",
+      "game2048/evaluation.py": "048ceec5d2ae77821f7a29445acafdfb01637c8938a11036f9b7783a50b31f43",
+      "game2048/evaluation_jobs.py": "c4da349023d51b4d294a871ac6d6bfb7c2a678604086af3f127a14c1eec55296",
+      "game2048/experiments.py": "b9ced9405895fcd06556d8714014f06127f41f6e6879e98929e20ca472e8b536",
+      "game2048/jax_env.py": "496b1362c935382e6f6aae5e805758cac393b1f67dd9b002a9b2824802947b3e",
+      "game2048/kernels.py": "6c58015d5b53f73dcc50a61d6eb13bdfc5ef442cc9d3feac30b7223453ba2155",
+      "game2048/network.py": "e4f9aa99bbb31f91668963f848c02b63054ca012a4f3a6d1d732f256d19e7c38",
+      "game2048/planner.py": "bc43cce48190eabc6da4f2d1d8c7a1268a5ac071e85560c9e536879cdde8850a",
+      "game2048/rules.py": "cb95a794cd04b202062d294651f56417125f104c9eeddbd73229e45508581e28",
+      "game2048/teacher.py": "cd7db3788a35fe480354b9c652022185e187763d4385df1d715b2c88118e072f",
+      "game2048/training.py": "9037c4931ad78012c89b64ddc4ba823b85e0e1e9b314d10800704fc9b022540c",
+      "game2048/wrappers/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "scripts/execute_ablation_job.py": "92d195e776c59b61914d07044897320058ab5ebb5434e640106425512b111608",
+      "scripts/profile_hotpaths.py": "20e2f0c88bb5b1e3427664cb1f5a101b87434de6713f12bd325cab11e25f400d",
+      "pyproject.toml": "21aab38a23f0fb366931ec8bacee4a5208a8bdaac42abc260ffe69399b47b765",
+      "uv.lock": "b6a0e3843cfd0ccf4e08348f40ec95750e16da181c6cba5ce762e56ca0b42e2e"
+    },
+    "runtime": {
+      "python": "3.12.16",
+      "packages": {
+        "jax": "0.12.0.1",
+        "jaxlib": "0.12.0.1",
+        "flax": "0.12.10",
+        "optax": "0.2.8",
+        "numpy": "2.5.4",
+        "jax-cuda12-plugin": "0.12.0.1",
+        "jax-cuda12-pjrt": "0.12.0.1",
+        "nvidia-cudnn-cu12": "9.10.2.21"
+      },
+      "flags": {
+        "JAX_PLATFORMS": "cuda",
+        "XLA_FLAGS": "--xla_gpu_deterministic_ops=true",
+        "JAX_DEFAULT_MATMUL_PRECISION": null,
+        "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+        "LD_LIBRARY_PATH": "/home/liu/other/sym2048-ablation/.venv/lib/python3.12/site-packages/nvidia/cudnn/lib:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
+      }
+    }
+  },
+  "models": {
+    "d4_distill_td": {
+      "architecture": "d4",
+      "width": 32,
+      "blocks": 2,
+      "head_width": 64
+    },
+    "d4_scratch_td": {
+      "architecture": "d4",
+      "width": 32,
+      "blocks": 2,
+      "head_width": 64
+    },
+    "plain_distill_td": {
+      "architecture": "plain",
+      "width": 83,
+      "blocks": 2,
+      "head_width": 64
+    }
+  },
+  "random_streams": "See state.STREAMS; initialization is split(PRNGKey(seed))[1]"
+}

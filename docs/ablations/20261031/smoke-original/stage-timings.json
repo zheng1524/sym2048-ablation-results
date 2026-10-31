@@ -1,0 +1,194 @@
+{
+  "attempts": [
+    {
+      "stage": "d4_scratch_td-seed0-td",
+      "seconds": 11.771213072002865,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_scratch_td-seed1-td",
+      "seconds": 11.720600334010669,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_scratch_td-seed2-td",
+      "seconds": 11.645833426999161,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_distill_td-seed0-supervised",
+      "seconds": 24.788615944999037,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_distill_td-seed0-td",
+      "seconds": 12.82899386700592,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_distill_td-seed1-supervised",
+      "seconds": 18.30385847100115,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_distill_td-seed1-td",
+      "seconds": 12.073489497997798,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_distill_td-seed2-supervised",
+      "seconds": 17.52749930199934,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_distill_td-seed2-td",
+      "seconds": 12.354913155999384,
+      "returncode": 0
+    },
+    {
+      "stage": "plain_distill_td-seed0-supervised",
+      "seconds": 15.295086744998116,
+      "returncode": 0
+    },
+    {
+      "stage": "plain_distill_td-seed0-td",
+      "seconds": 9.160843588004354,
+      "returncode": 0
+    },
+    {
+      "stage": "plain_distill_td-seed1-supervised",
+      "seconds": 14.573454006007523,
+      "returncode": 0
+    },
+    {
+      "stage": "plain_distill_td-seed1-td",
+      "seconds": 9.2110303290101,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_scratch_td-seed0-td",
+      "seconds": 10.32005070100422,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_scratch_td-seed1-td",
+      "seconds": 10.094780804996844,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_scratch_td-seed2-td",
+      "seconds": 10.2013516099978,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_distill_td-seed0-supervised",
+      "seconds": 17.215124082998955,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_distill_td-seed0-td",
+      "seconds": 10.365691059007077,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_distill_td-seed1-supervised",
+      "seconds": 13.500455581001006,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_distill_td-seed1-td",
+      "seconds": 10.71761007400346,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_distill_td-seed2-supervised",
+      "seconds": 13.23396801900526,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_distill_td-seed2-td",
+      "seconds": 10.468368706991896,
+      "returncode": 0
+    },
+    {
+      "stage": "plain_distill_td-seed0-supervised",
+      "seconds": 10.667915247991914,
+      "returncode": 0
+    },
+    {
+      "stage": "plain_distill_td-seed0-td",
+      "seconds": 7.863152090008953,
+      "returncode": 0
+    },
+    {
+      "stage": "plain_distill_td-seed1-supervised",
+      "seconds": 10.549578548001591,
+      "returncode": 0
+    },
+    {
+      "stage": "plain_distill_td-seed1-td",
+      "seconds": 8.0250945029984,
+      "returncode": 0
+    },
+    {
+      "stage": "plain_distill_td-seed2-supervised",
+      "seconds": 14.532850137009518,
+      "returncode": 0
+    },
+    {
+      "stage": "plain_distill_td-seed2-td",
+      "seconds": 9.023750788997859,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_distill_td-seed0-test",
+      "seconds": 5.605498770004488,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_distill_td-seed1-test",
+      "seconds": 5.661475436994806,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_distill_td-seed2-test",
+      "seconds": 5.713463691005018,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_scratch_td-seed0-test",
+      "seconds": 5.703478107010596,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_scratch_td-seed1-test",
+      "seconds": 5.630026971994084,
+      "returncode": 0
+    },
+    {
+      "stage": "d4_scratch_td-seed2-test",
+      "seconds": 5.63593427700107,
+      "returncode": 0
+    },
+    {
+      "stage": "plain_distill_td-seed0-test",
+      "seconds": 4.828236647997983,
+      "returncode": 0
+    },
+    {
+      "stage": "plain_distill_td-seed1-test",
+      "seconds": 4.755846104992088,
+      "returncode": 0
+    },
+    {
+      "stage": "plain_distill_td-seed2-test",
+      "seconds": 4.696307951002382,
+      "returncode": 0
+    },
+    {
+      "stage": "summary",
+      "seconds": 6.443744579999475,
+      "returncode": 0
+    }
+  ]
+}

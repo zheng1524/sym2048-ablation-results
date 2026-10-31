@@ -1,0 +1,17 @@
+{
+  "0": {
+    "A_initial_sha256": "0b4d85de60ce262bad66af79f556a52508e4e0e3dd5c5c974a3083922e267d5f",
+    "B_initial_sha256": "0b4d85de60ce262bad66af79f556a52508e4e0e3dd5c5c974a3083922e267d5f",
+    "B_upstream": null
+  },
+  "1": {
+    "A_initial_sha256": "04caf0d7a3ab63aa64acc9a7c54e1458d5fa99e151495608eb9a0d2f2ba78335",
+    "B_initial_sha256": "04caf0d7a3ab63aa64acc9a7c54e1458d5fa99e151495608eb9a0d2f2ba78335",
+    "B_upstream": null
+  },
+  "2": {
+    "A_initial_sha256": "37c9fab9bcc755fb0d009d9ddcc29d327714aedbf32c8a5ebee0d06c287d5fbb",
+    "B_initial_sha256": "37c9fab9bcc755fb0d009d9ddcc29d327714aedbf32c8a5ebee0d06c287d5fbb",
+    "B_upstream": null
+  }
+}

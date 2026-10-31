@@ -1,0 +1,10 @@
+Resolved 2 packages in 6.36s
+WARN Retry attempt #0. Sleeping 1.748573941s before the next attempt
+Downloading jax-cuda12-pjrt (183.0MiB)
+Downloading jax-cuda12-plugin (8.5MiB)
+ Downloaded jax-cuda12-plugin
+ Downloaded jax-cuda12-pjrt
+Prepared 2 packages in 26.99s
+Installed 2 packages in 3ms
+ + jax-cuda12-pjrt==0.12.0.1
+ + jax-cuda12-plugin==0.12.0.1

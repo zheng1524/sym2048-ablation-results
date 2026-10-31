@@ -1,0 +1,133 @@
+......F.............................                                     [100%]
+=================================== FAILURES ===================================
+_____________ test_supervised_pool_resume_and_upstream_hash_guard ______________
+
+tmp_path = PosixPath('/tmp/pytest-of-liu/pytest-4/test_supervised_pool_resume_an0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fc6482731d0>
+
+    def test_supervised_pool_resume_and_upstream_hash_guard(tmp_path, monkeypatch):
+        from game2048.ablations import supervised
+    
+        # A small deterministic label fixture tests recovery mechanics only. Real smoke
+        # supervision separately uses the complete verified 3x3 teacher.
+        boards = np.asarray(jax.vmap(jax_env.reset)(jax.random.split(jax.random.PRNGKey(4), 8)))
+        codes = np.array([rules.encode(b) for b in boards], np.uint64)
+        words = jnp.asarray(
+            np.stack([codes.astype(np.uint32), (codes >> 32).astype(np.uint32)], axis=1)
+        )
+        masks = jax.vmap(jax_env.afterstates)(jnp.asarray(boards))[1]
+        labels = jnp.full((len(boards), 4), 8.0, jnp.float32)
+        arrays = (words, labels, masks, jnp.arange(8), jnp.array([0]), jnp.array([8]))
+        teacher = SimpleNamespace(lookup=lambda x: (np.arange(len(x)) % 8, None, None))
+        monkeypatch.setattr(supervised, "checked_teacher", lambda _: teacher)
+        monkeypatch.setattr(supervised, "_teacher_arrays", lambda _: arrays)
+        p = tiny_protocol()
+        p = replace(
+            p,
+            supervised=replace(
+                p.supervised, max_updates=3, validation_every=2, warmup_updates=0, collect_every=1
+            ),
+        )
+        spec = ModelSpec("d4", 2, 0, 4)
+        options = dict(group="d4_distill_td", seed=0, spec=spec, protocol=p)
+        supervised.train(tmp_path / "unavailable", tmp_path / "whole", **options)
+        supervised.train(tmp_path / "unavailable", tmp_path / "split", stop_after=1, **options)
+>       supervised.train(tmp_path / "unavailable", tmp_path / "split", resume=True, **options)
+
+tests/test_ablations.py:235: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+teacher_dir = PosixPath('/tmp/pytest-of-liu/pytest-4/test_supervised_pool_resume_an0/unavailable')
+output = PosixPath('/tmp/pytest-of-liu/pytest-4/test_supervised_pool_resume_an0/split')
+group = 'd4_distill_td', seed = 0
+spec = ModelSpec(architecture='d4', width=2, blocks=0, head_width=4)
+protocol = Protocol(seeds=(0,), smoke=True, validation_seed=400000, validation_games=2, test_seed=500000, test_games=2, evaluatio..., learning_rate=3e-05, trace_lambda=0.8, envs=2, horizon=2, validation_every=2), version='distillation-d4-20261031-v1')
+resume = True, stop_after = None
+
+    def train(teacher_dir, output, *, group, seed, spec, protocol, resume=False, stop_after=None):
+        if group not in ("d4_distill_td", "plain_distill_td"):
+            raise ValueError("Only distillation groups may enter supervised training")
+        teacher = checked_teacher(teacher_dir)
+        model, params = initialize(spec, seed)
+        cfg = protocol.supervised
+        request = {
+            "phase": "supervised",
+            "group": group,
+            "seed": seed,
+            "model": asdict(spec),
+            "protocol": protocol.json(),
+            "initial_params_sha256": parameter_hash(params),
+            "upstream_sha256": None,
+            "teacher_sha256": TEACHER_SHA256,
+            "source": source_identity(),
+        }
+        checkpoint = prepare(output, request, resume=resume)
+        state = TrainState.create(apply_fn=model.apply, params=params, tx=_optimizer(cfg.learning_rate))
+        streams = random_streams(seed)
+        pool = np.zeros(cfg.pool_capacity, np.int32)
+        boards = jnp.empty((0, 3, 3), jnp.int32)
+        best_params = params
+        info: dict = {
+            "request": request,
+            "step": 0,
+            "history": [],
+            "best_score": None,
+            "best_step": 0,
+            "stale": 0,
+            "pool_count": 0,
+            "pool_position": 0,
+            "elapsed_seconds": 0.0,
+            "environment_transitions": 0,
+            "parameter_count": parameter_count(params),
+        }
+        if checkpoint.exists():
+            state, streams, boards, pool, best_params, info = read_recovery(checkpoint, state, request)
+        if (output / "complete.json").exists() and int(state.step) != cfg.max_updates:
+            raise ValueError("Invalid supervised completion marker")
+        arrays = _teacher_arrays(teacher)
+        pool_device = jnp.asarray(pool)
+        update = make_update(model, cfg)
+        collector = _make_collection(model, cfg.collection_envs, cfg.collection_steps)
+        label_validation = make_label_validation(model, cfg.batch_size)
+        started = time.monotonic()
+        previous_seconds = info["elapsed_seconds"]
+        compiling = time.monotonic()
+        update = update.lower(
+            state,
+            streams["sample"],
+            streams["augment"],
+            arrays,
+            pool_device,
+            jnp.int32(info["pool_count"]),
+        ).compile()
+        info["training_compile_seconds"] = info.get("training_compile_seconds", 0.0) + (
+            time.monotonic() - compiling
+        )
+    
+        def save():
+            info["step"] = int(state.step)
+            info["elapsed_seconds"] = previous_seconds + time.monotonic() - started
+            write_recovery(output, state, streams, boards, pool, best_params, info, spec)
+    
+        if not checkpoint.exists():
+            save()
+        try:
+            for step in range(int(state.step) + 1, cfg.max_updates + 1):
+                if step > cfg.warmup_updates and (step - 1) % cfg.collect_every == 0:
+                    observations = np.asarray(collector(state.params, take(streams, "collect")))
+                    rows, _, _ = teacher.lookup(observations)
+                    rows = rows[-cfg.pool_capacity :].astype(np.int32)
+                    indices = (np.arange(len(rows)) + info["pool_position"]) % cfg.pool_capacity
+>                   pool[indices] = rows
+                    ^^^^^^^^^^^^^
+E                   ValueError: assignment destination is read-only
+
+game2048/ablations/supervised.py:185: ValueError
+----------------------------- Captured stdout call -----------------------------
+{'group': 'd4_distill_td', 'seed': 0, 'step': 1, 'loss': 57.37040328979492}
+{'validation_step': 2, 'score': 5.0}
+{'validation_step': 3, 'score': 5.5}
+{'group': 'd4_distill_td', 'seed': 0, 'step': 1, 'loss': 57.37040328979492}
+=========================== short test summary info ============================
+FAILED tests/test_ablations.py::test_supervised_pool_resume_and_upstream_hash_guard
+1 failed, 35 passed in 59.23s

@@ -1,0 +1,1 @@
+PASS: copied and hash-verified 15 smoke checkpoints and 9 complete CSVs; temporary copies removed.

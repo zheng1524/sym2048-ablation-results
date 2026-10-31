@@ -1,0 +1,36 @@
+{
+  "algorithm_version": "distillation-d4-20261031-v1",
+  "mode": "greedy",
+  "model": {
+    "architecture": "plain",
+    "width": 83,
+    "blocks": 2,
+    "head_width": 64
+  },
+  "params_sha256": "3cc0675ac7817c53ce45bcf306bb6845ee7d7fdf28b5264bfb5577f7ded4094f",
+  "games": 4,
+  "seed_start": 500000,
+  "batch_size": 4,
+  "smoke": true,
+  "source_sha256": "817e0a03486c266c38611c0fd3fe2dd381f6d012b7dada3dc6786487aa7ccf55",
+  "runtime": {
+    "python": "3.12.16",
+    "packages": {
+      "jax": "0.12.0.1",
+      "jaxlib": "0.12.0.1",
+      "flax": "0.12.10",
+      "optax": "0.2.8",
+      "numpy": "2.5.4",
+      "jax-cuda12-plugin": "0.12.0.1",
+      "jax-cuda12-pjrt": "0.12.0.1",
+      "nvidia-cudnn-cu12": "9.10.2.21"
+    },
+    "flags": {
+      "JAX_PLATFORMS": "cuda",
+      "XLA_FLAGS": "--xla_gpu_deterministic_ops=true",
+      "JAX_DEFAULT_MATMUL_PRECISION": null,
+      "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+      "LD_LIBRARY_PATH": "/home/liu/other/sym2048-ablation/.venv/lib/python3.12/site-packages/nvidia/cudnn/lib:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
+    }
+  }
+}

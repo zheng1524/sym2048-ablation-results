@@ -1,0 +1,127 @@
+....F.F.............................                                     [100%]
+=================================== FAILURES ===================================
+_________________ test_scratch_td_no_teacher_and_exact_resume __________________
+
+tmp_path = PosixPath('/tmp/pytest-of-liu/pytest-7/test_scratch_td_no_teacher_and0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f199487f350>
+
+    def test_scratch_td_no_teacher_and_exact_resume(tmp_path, monkeypatch):
+        import game2048.teacher as teacher_module
+    
+        def forbidden(*args, **kwargs):
+            raise AssertionError("Scratch TD must not construct or query teacher")
+    
+        monkeypatch.setattr(teacher_module.Teacher, "__init__", forbidden)
+        monkeypatch.setattr(teacher_module.Teacher, "lookup", forbidden)
+        spec, p = ModelSpec("d4", 2, 0, 4), tiny_protocol()
+        options = dict(group="d4_scratch_td", seed=0, spec=spec, protocol=p)
+        train(tmp_path / "continuous", **options)
+        train(tmp_path / "split", stop_after=1, **options)
+        assert not (tmp_path / "split" / "complete.json").exists()
+        train(tmp_path / "split", resume=True, **options)
+    
+        def read(name):
+            return serialization.msgpack_restore((tmp_path / name / "recovery.msgpack").read_bytes())
+    
+        a, b = read("continuous"), read("split")
+        for field in ("state", "streams", "boards", "best_params"):
+            for x, y in zip(jax.tree.leaves(a[field]), jax.tree.leaves(b[field]), strict=True):
+>               np.testing.assert_array_equal(x, y)
+E               AssertionError: 
+E               Arrays are not equal
+E               
+E               Mismatched elements: 18 / 198 (9.09%)
+E               First 5 mismatches are at indices:
+E                [1, 0, 0, 1]: -0.00034232583129778504 (ACTUAL), -0.00034232588950544596 (DESIRED)
+E                [1, 0, 1, 1]: 0.0021691194269806147 (ACTUAL), 0.0021691196598112583 (DESIRED)
+E                [1, 0, 2, 1]: 0.0003168343973811716 (ACTUAL), 0.0003168344555888325 (DESIRED)
+E                [2, 0, 0, 0]: -0.00011130981874885038 (ACTUAL), -0.00011130985512863845 (DESIRED)
+E                [2, 0, 0, 1]: 0.00011132127838209271 (ACTUAL), 0.0001113212711061351 (DESIRED)
+E               Max absolute difference among violations: 4.656613e-10
+E               Max relative difference among violations: 5.934676e-07
+E                ACTUAL: array([[[[-1.826489e-03,  1.826492e-03],
+E                        [-7.470122e-05,  7.470509e-05],
+E                        [-3.069454e-08,  3.098120e-08],...
+E                DESIRED: array([[[[-1.826489e-03,  1.826492e-03],
+E                        [-7.470122e-05,  7.470509e-05],
+E                        [-3.069454e-08,  3.098120e-08],...
+
+tests/test_ablations.py:170: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 1, 'loss': 0.003932928200811148}
+{'validation_step': 2, 'score': 5.5}
+{'validation_step': 3, 'score': 5.5}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 1, 'loss': 0.003932928200811148}
+{'validation_step': 2, 'score': 5.5}
+{'validation_step': 3, 'score': 5.5}
+_____________ test_supervised_pool_resume_and_upstream_hash_guard ______________
+
+tmp_path = PosixPath('/tmp/pytest-of-liu/pytest-7/test_supervised_pool_resume_an0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f19742421b0>
+
+    def test_supervised_pool_resume_and_upstream_hash_guard(tmp_path, monkeypatch):
+        from game2048.ablations import supervised
+    
+        # A small deterministic label fixture tests recovery mechanics only. Real smoke
+        # supervision separately uses the complete verified 3x3 teacher.
+        boards = np.asarray(jax.vmap(jax_env.reset)(jax.random.split(jax.random.PRNGKey(4), 8)))
+        codes = np.array([rules.encode(b) for b in boards], np.uint64)
+        words = jnp.asarray(
+            np.stack([codes.astype(np.uint32), (codes >> 32).astype(np.uint32)], axis=1)
+        )
+        masks = jax.vmap(jax_env.afterstates)(jnp.asarray(boards))[1]
+        labels = jnp.full((len(boards), 4), 8.0, jnp.float32)
+        arrays = (words, labels, masks, jnp.arange(8), jnp.array([0]), jnp.array([8]))
+        teacher = SimpleNamespace(lookup=lambda x: (np.arange(len(x)) % 8, None, None))
+        monkeypatch.setattr(supervised, "checked_teacher", lambda _: teacher)
+        monkeypatch.setattr(supervised, "_teacher_arrays", lambda _: arrays)
+        p = tiny_protocol()
+        p = replace(
+            p,
+            supervised=replace(
+                p.supervised, max_updates=3, validation_every=2, warmup_updates=0, collect_every=1
+            ),
+        )
+        spec = ModelSpec("d4", 2, 0, 4)
+        options = dict(group="d4_distill_td", seed=0, spec=spec, protocol=p)
+        supervised.train(tmp_path / "unavailable", tmp_path / "whole", **options)
+        supervised.train(tmp_path / "unavailable", tmp_path / "split", stop_after=1, **options)
+        supervised.train(tmp_path / "unavailable", tmp_path / "split", resume=True, **options)
+        whole, split = [
+            serialization.msgpack_restore((tmp_path / name / "recovery.msgpack").read_bytes())
+            for name in ("whole", "split")
+        ]
+        for field in ("state", "streams", "pool", "best_params"):
+            for a, b in zip(jax.tree.leaves(whole[field]), jax.tree.leaves(split[field]), strict=True):
+>               np.testing.assert_array_equal(a, b)
+E               AssertionError: 
+E               Arrays are not equal
+E               
+E               Mismatched elements: 7 / 198 (3.54%)
+E               First 5 mismatches are at indices:
+E                [0, 0, 0, 0]: 0.00020508108718786389 (ACTUAL), 0.00020508107263594866 (DESIRED)
+E                [3, 0, 1, 1]: -6.300373206613585e-05 (ACTUAL), -6.300372479017824e-05 (DESIRED)
+E                [4, 0, 0, 0]: 0.0027924736496061087 (ACTUAL), 0.0027924731839448214 (DESIRED)
+E                [5, 0, 0, 0]: 0.0025781921576708555 (ACTUAL), 0.002578192623332143 (DESIRED)
+E                [6, 0, 2, 0]: 0.0025769921485334635 (ACTUAL), 0.002576992381364107 (DESIRED)
+E               Max absolute difference among violations: 4.656613e-10
+E               Max relative difference among violations: 1.806154e-07
+E                ACTUAL: array([[[[ 2.050811e-04, -2.050951e-04],
+E                        [ 4.971134e-07, -4.968882e-07],
+E                        [ 1.091212e-07, -1.090922e-07],...
+E                DESIRED: array([[[[ 2.050811e-04, -2.050951e-04],
+E                        [ 4.971134e-07, -4.968882e-07],
+E                        [ 1.091212e-07, -1.090922e-07],...
+
+tests/test_ablations.py:242: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{'group': 'd4_distill_td', 'seed': 0, 'step': 1, 'loss': 57.37024688720703}
+{'validation_step': 2, 'score': 5.5}
+{'validation_step': 3, 'score': 5.0}
+{'group': 'd4_distill_td', 'seed': 0, 'step': 1, 'loss': 57.37024688720703}
+{'validation_step': 2, 'score': 5.5}
+{'validation_step': 3, 'score': 5.0}
+=========================== short test summary info ============================
+FAILED tests/test_ablations.py::test_scratch_td_no_teacher_and_exact_resume
+FAILED tests/test_ablations.py::test_supervised_pool_resume_and_upstream_hash_guard
+2 failed, 34 passed in 88.44s (0:01:28)

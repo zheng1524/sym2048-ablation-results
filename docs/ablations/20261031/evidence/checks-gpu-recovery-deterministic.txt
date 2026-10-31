@@ -1,0 +1,51 @@
+....F..                                                                  [100%]
+=================================== FAILURES ===================================
+_________________ test_scratch_td_no_teacher_and_exact_resume __________________
+
+tmp_path = PosixPath('/tmp/pytest-of-liu/pytest-8/test_scratch_td_no_teacher_and0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f83c87d7110>
+
+    def test_scratch_td_no_teacher_and_exact_resume(tmp_path, monkeypatch):
+        import game2048.teacher as teacher_module
+    
+        def forbidden(*args, **kwargs):
+            raise AssertionError("Scratch TD must not construct or query teacher")
+    
+        monkeypatch.setattr(teacher_module.Teacher, "__init__", forbidden)
+        monkeypatch.setattr(teacher_module.Teacher, "lookup", forbidden)
+        spec, p = ModelSpec("d4", 2, 0, 4), tiny_protocol()
+        options = dict(group="d4_scratch_td", seed=0, spec=spec, protocol=p)
+        train(tmp_path / "continuous", **options)
+        train(tmp_path / "split", stop_after=1, **options)
+        assert not (tmp_path / "split" / "complete.json").exists()
+>       train(tmp_path / "split", resume=True, **options)
+
+tests/test_ablations.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+game2048/ablations/td.py:93: in train
+    checkpoint = prepare(output, request, resume=resume)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+game2048/ablations/state.py:40: in prepare
+    claim(output, "request.json", request)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+directory = PosixPath('/tmp/pytest-of-liu/pytest-8/test_scratch_td_no_teacher_and0/split')
+filename = 'request.json'
+specification = {'phase': 'td', 'group': 'd4_scratch_td', 'seed': 0, 'model': {'architecture': 'd4', 'width': 2, 'blocks': 0, 'head_width': 4}, ...}
+
+    def claim(directory: Path, filename: str, specification: dict):
+        path = directory / filename
+        if path.exists():
+            if json.loads(path.read_text()) != specification:
+>               raise ValueError(f"Configuration/source mismatch: {directory}")
+E               ValueError: Configuration/source mismatch: /tmp/pytest-of-liu/pytest-8/test_scratch_td_no_teacher_and0/split
+
+game2048/ablations/provenance.py:69: ValueError
+----------------------------- Captured stdout call -----------------------------
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 1, 'loss': 0.003932928200811148}
+{'validation_step': 2, 'score': 5.5}
+{'validation_step': 3, 'score': 5.5}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 1, 'loss': 0.003932928200811148}
+=========================== short test summary info ============================
+FAILED tests/test_ablations.py::test_scratch_td_no_teacher_and_exact_resume
+1 failed, 6 passed in 42.08s

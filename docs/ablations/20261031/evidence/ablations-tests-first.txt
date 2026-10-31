@@ -1,0 +1,64 @@
+FF....                                                                   [100%]
+=================================== FAILURES ===================================
+___________ test_factory_counts_initialization_and_structural_audit ____________
+
+tmp_path = PosixPath('/tmp/pytest-of-liu/pytest-1/test_factory_counts_initializa0')
+
+    def test_factory_counts_initialization_and_structural_audit(tmp_path):
+        _, d4 = initialize(ModelSpec(), 0)
+        plain_model, plain = initialize(ModelSpec("plain", 83), 0)
+        assert parameter_count(d4) == 304_833
+        assert parameter_count(plain) == 305_403
+        assert abs(parameter_count(plain) / parameter_count(d4) - 1) < 0.01
+        for seed in (0, 1, 2):
+            old, a = initialize(ModelSpec(), seed)
+            _, b = initialize(ModelSpec(), seed)
+            assert parameter_hash(a) == parameter_hash(b)
+            boards = jax.random.randint(jax.random.PRNGKey(seed), (6, 3, 3), 0, 10)
+            np.testing.assert_array_equal(
+                old.apply({"params": a}, boards), ValueNetwork().apply({"params": a}, boards)
+            )
+        assert isinstance(plain_model, PlainValueNetwork)
+        keys = set(plain)
+        assert not any("Group" in name for name in keys)
+>       assert plain["Dense_0"]["kernel"].shape == (9 * 83, 64)
+E       assert (64, 1) == (747, 64)
+E         
+E         At index 0 diff: 64 != 747
+E         Use -v to get more diff
+
+tests/test_ablations.py:58: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  jax._src.xla_bridge:xla_bridge.py:903 An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+____________ test_checkpoint_jit_boundary_and_actual_evaluation[d4] ____________
+
+tmp_path = PosixPath('/tmp/pytest-of-liu/pytest-1/test_checkpoint_jit_boundary_a0')
+architecture = 'd4'
+
+    @pytest.mark.parametrize("architecture", ["d4", "plain"])
+    def test_checkpoint_jit_boundary_and_actual_evaluation(tmp_path, architecture):
+        spec = ModelSpec(architecture, 2, 0, 4)
+        model, params = initialize(spec, 0)
+        boards = jax.random.randint(jax.random.PRNGKey(6), (7, 3, 3), 0, 10)
+        predict = jax.jit(lambda p, x: model.apply({"params": p}, x))
+>       np.testing.assert_allclose(
+            model.apply({"params": params}, boards), predict(params, boards), rtol=1e-5, atol=2e-6
+        )
+E       AssertionError: 
+E       Not equal to tolerance rtol=1e-05, atol=2e-06
+E       
+E       Mismatched elements: 1 / 7 (14.3%)
+E       Mismatch at index:
+E        [4]: 0.09332337230443954 (ACTUAL), 0.09331219643354416 (DESIRED)
+E       Max absolute difference among violations: 1.1175871e-05
+E       Max relative difference among violations: 0.00011977
+E        ACTUAL: array([0.07253 , 0.353705, 0.171091, 0.305241, 0.093323, 0.249971,
+E              0.259165], dtype=float32)
+E        DESIRED: array([0.07253 , 0.353705, 0.171091, 0.305241, 0.093312, 0.249971,
+E              0.259165], dtype=float32)
+
+tests/test_ablations.py:85: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_ablations.py::test_factory_counts_initialization_and_structural_audit
+FAILED tests/test_ablations.py::test_checkpoint_jit_boundary_and_actual_evaluation[d4]
+2 failed, 4 passed in 22.31s
