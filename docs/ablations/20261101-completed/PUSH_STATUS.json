@@ -1,11 +1,15 @@
 {
-  "checked_at_utc": "2026-11-01T12:49:09.484888+00:00",
-  "uploaded": false,
-  "remote_branch_created": false,
+  "checked_at_utc": "2026-11-01T14:43:23.290189+00:00",
+  "uploaded": true,
+  "remote_branch_created": true,
   "pull_request_created": false,
-  "reason": "GitHub HTTP 403: Permission to 2986002971/sym2048.git denied to zheng1524.",
-  "repository": "2986002971/sym2048",
+  "repository": "zheng1524/sym2048-ablation-results",
+  "repository_url": "https://github.com/zheng1524/sym2048-ablation-results",
+  "visibility": "private",
   "publication_branch": "experiment/completed-ablation-results-20261101",
-  "remote_main_sha_unchanged": "6eb6db44f0a3d70c15b92b5200404bb2b033d686",
-  "prepared_content_commit": "ab7ad330c1de28a16afa6ebeb74c42f45c86d805"
+  "original_repository": "2986002971/sym2048",
+  "original_repository_modified": false,
+  "original_baseline_commit": "6eb6db44f0a3d70c15b92b5200404bb2b033d686",
+  "first_verified_content_commit": "c17400f5f854f8bcefe00a7f51862c35ac6e5dcb",
+  "user_authorization": "User explicitly requested a separate repository under zheng1524; merging deferred."
 }

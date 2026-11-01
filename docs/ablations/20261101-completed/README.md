@@ -71,3 +71,5 @@ print(spec, metadata["step"])
 本分支继承冻结源码提交中的开发检查和 smoke 记录，它们在旧的 20261031 命名空间并明确标注 smoke。本目录没有将 smoke、部分训练或历史主线成绩混入本次已完成训练结果。
 
 本次独立发布工作区的检查：Ruff、格式检查、ty 全部通过；CPU 全套 **38 项测试通过（82.59 秒）**。日志在 evidence/snapshot-*.txt。同一冻结源码的 GPU 全套检查记录也已随附。测试使用共享的已安装依赖、独立工作区源码及 CPU 后端，未改变正在运行的训练环境或源码。
+
+发布位置：[zheng1524/sym2048-ablation-results](https://github.com/zheng1524/sym2048-ablation-results)，私有仓库。实验分支为 `experiment/completed-ablation-results-20261101`，main 保留原始基线。用户已明确授权使用此独立仓库存放对比实验，后续合并另行决定；原仓库未作修改。

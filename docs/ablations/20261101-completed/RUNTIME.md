@@ -1,3 +1,5 @@
+> 发布说明：下文的 push=false 和 403 指原仓库 2986002971/sym2048。用户随后授权将结果发布至自有私有仓库 zheng1524/sym2048-ablation-results；原仓库保持不变。
+
 # Local runtime and recovery
 
 The original 4090 endpoints were probed with the already configured key in batch

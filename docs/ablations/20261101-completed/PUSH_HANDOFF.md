@@ -1,27 +1,23 @@
-# 原仓库推送交接
+# 已发布到独立私有仓库
 
-**尚未上传；远端新分支和 PR 均未创建。** 实际推送返回 GitHub HTTP 403，账号
-`zheng1524` 没有 `2986002971/sym2048` 的写权限，见 evidence/push-attempt-403.txt。
-本机账号及 GitHub 连接都报告 pull=true、push=false。
+仓库：https://github.com/zheng1524/sym2048-ablation-results
 
-独立本地分支：`experiment/completed-ablation-results-20261101`。
-独立工作区：`/home/liu/other/sym2048-completed-20261101`。
-自包含 bundle：`/home/liu/other/sym2048-completed-ablation-results-20261101.bundle`。
+实验分支：`experiment/completed-ablation-results-20261101`。
+新仓库的 main 保留原始基线 `6eb6db44f0a3d70c15b92b5200404bb2b033d686`；
+实验实现及本快照在上述独立分支。未创建或合并 PR。
 
-原仓库所有 38 个已有文件的 blob 和模式保持一致，main 仍为
-`6eb6db44f0a3d70c15b92b5200404bb2b033d686`。正在运行的训练工作区未作调整。
-本分支只增加独立消融实现及文档/结果路径，不包含教师、缓存或恢复包。
+依用户明确要求，发布位置改为 zheng1524 自有仓库。原仓库
+`2986002971/sym2048` 的所有分支和既有文件保持不变。先前对原仓库的 403
+记录留在 evidence/push-attempt-403.txt，作为历史记录。
 
-仓库所有者为 zheng1524 授予 Write，或在本机 gh 配置已有写权限的账号后，执行：
+本地发布工作区仍为 `/home/liu/other/sym2048-completed-20261101`。
+为保持原有配置，它的 origin 仍指向原仓库；向新仓库追加结果时应显式指定 URL：
 
 ```bash
-cd /home/liu/other/sym2048-completed-20261101
-git push --set-upstream origin HEAD:refs/heads/experiment/completed-ablation-results-20261101
-gh pr create --draft --base main \
-  --head experiment/completed-ablation-results-20261101 \
-  --title '新增独立消融实现与已完成训练快照' \
-  --body-file docs/ablations/20261101-completed/PR_BODY.md
+git push https://github.com/zheng1524/sym2048-ablation-results.git \
+  HEAD:refs/heads/experiment/completed-ablation-results-20261101
 ```
 
-不使用 force push，不向 main 推送，不合并 PR。若远端后来出现不属于本快照的同名分支，
-使用新的唯一分支名。bundle 含完整历史，可在另一台有写权限的机器克隆后推送。
+也可单独克隆新仓库的实验分支。后续是否合并回原仓库由用户另行决定。
+本次上传为已经完成训练的阶段快照，全部成绩属于验证集；尚未完成的 A/C seed 2
+以及正式测试结果未混入该快照。现有训练未受发布操作调整。

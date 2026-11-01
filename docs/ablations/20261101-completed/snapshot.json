@@ -396,5 +396,8 @@
         "LD_LIBRARY_PATH": "/home/liu/other/sym2048-ablation/.venv/lib/python3.12/site-packages/nvidia/cudnn/lib:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
       }
     }
-  }
+  },
+  "source_repository": "2986002971/sym2048",
+  "publication_repository": "zheng1524/sym2048-ablation-results",
+  "publication_visibility": "private"
 }
