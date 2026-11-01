@@ -1,0 +1,55 @@
+{
+  "all_passed": true,
+  "stages": [
+    {
+      "stage": "d4_distill_td-seed0-supervised",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "d4_distill_td-seed0-td",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "d4_distill_td-seed1-supervised",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "d4_distill_td-seed1-td",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "d4_scratch_td-seed0-td",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "d4_scratch_td-seed1-td",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "d4_scratch_td-seed2-td",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "plain_distill_td-seed0-supervised",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "plain_distill_td-seed0-td",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "plain_distill_td-seed1-supervised",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "plain_distill_td-seed1-td",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    }
+  ],
+  "A_B_shared_initialization_verified_for_seeds": [
+    0,
+    1
+  ],
+  "scratch_teacher_and_upstream_absent": true,
+  "TD_upstream_hashes_match_supervised_best": true
+}

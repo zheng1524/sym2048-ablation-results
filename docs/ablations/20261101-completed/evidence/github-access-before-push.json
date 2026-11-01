@@ -1,0 +1,18 @@
+{
+  "checked_at_utc": "2026-11-01T12:46:47.781292+00:00",
+  "repository": "2986002971/sym2048",
+  "local_gh_user": "zheng1524",
+  "local_gh_repo_permissions": {
+    "pull": true,
+    "push": false,
+    "admin": false,
+    "maintain": false
+  },
+  "github_connector_repo_permissions": {
+    "pull": true,
+    "push": false,
+    "admin": false,
+    "maintain": false
+  },
+  "main_sha": "6eb6db44f0a3d70c15b92b5200404bb2b033d686"
+}

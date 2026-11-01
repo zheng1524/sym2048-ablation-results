@@ -1,0 +1,187 @@
+"""Copy only complete stages, preserving the original Git tree and frozen sources."""
+
+import csv
+import hashlib
+import json
+import shutil
+import subprocess
+from datetime import UTC, datetime
+from pathlib import Path
+
+import numpy as np
+from flax import serialization
+
+ROOT = Path.cwd()
+SOURCE = Path('/home/liu/other/sym2048-ablation')
+RUN = SOURCE / 'runs/ablations-20261031-full'
+DEST = ROOT / 'docs/ablations/20261101-completed'
+BASE = '6eb6db44f0a3d70c15b92b5200404bb2b033d686'
+FROZEN = '8258a9eda7b5fba0dda9d4032737c58091f8bcc4'
+
+
+def read(path):
+    return json.loads(path.read_text())
+
+
+def write(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, indent=2, ensure_ascii=False, allow_nan=False) + '\n')
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def copy(source, destination):
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(source, destination)
+    if sha(source) != sha(destination):
+        raise ValueError(f'Copy hash mismatch: {source}')
+
+
+def leaves(value):
+    if isinstance(value, dict):
+        for child in value.values():
+            yield from leaves(child)
+    else:
+        yield np.asarray(value)
+
+
+def original_entries(ref):
+    raw = subprocess.check_output(['git', 'ls-tree', '-rz', ref], cwd=ROOT)
+    result = {}
+    for item in raw.split(b'\0'):
+        if not item:
+            continue
+        header, path = item.split(b'\t', 1)
+        mode, kind, blob = header.decode().split()
+        result[path.decode()] = {'mode': mode, 'type': kind, 'git_blob': blob}
+    return result
+
+
+if DEST.exists():
+    raise FileExistsError('Use a fresh publication namespace')
+experiment = read(RUN / 'experiment.json')
+assert experiment['source']['commit'] == FROZEN
+protected = original_entries(BASE)
+current = original_entries('HEAD')
+assert all(current.get(name) == value for name, value in protected.items())
+for name, value in protected.items():
+    blob = subprocess.check_output(['git', 'hash-object', '--', name], cwd=ROOT, text=True).strip()
+    assert blob == value['git_blob'], name
+for name, digest in experiment['source']['files'].items():
+    assert sha(ROOT / name) == digest, name
+write(DEST / 'evidence/original-files-unchanged.json', {
+    'base_commit': BASE, 'frozen_training_commit': FROZEN,
+    'protected_file_count': len(protected), 'every_original_blob_and_mode_identical': True,
+    'protected_files': protected,
+})
+copy(RUN / 'protocol.json', DEST / 'protocol.json')
+copy(RUN / 'experiment.json', DEST / 'experiment.json')
+records, excluded, audits, curve_rows = [], [], [], []
+timings = read(RUN / 'stage-timings.json')['attempts']
+for group in ('d4_distill_td', 'd4_scratch_td', 'plain_distill_td'):
+    for seed in (0, 1, 2):
+        for phase in ('supervised', 'td'):
+            if group == 'd4_scratch_td' and phase == 'supervised':
+                continue
+            stage = RUN / group / f'seed{seed}' / phase
+            if not (stage / 'complete.json').exists():
+                excluded.append({'group': group, 'seed': seed, 'phase': phase,
+                                 'reason': 'Not complete at snapshot time'})
+                continue
+            info, done, request = [read(stage / name) for name in (
+                'training.json', 'complete.json', 'request.json')]
+            count = 305403 if group == 'plain_distill_td' else 304833
+            budget = 100000 if phase == 'supervised' else 10000
+            assert info['step'] == done['updates'] == budget
+            assert info['request'] == done['request'] == request
+            assert request['source'] == experiment['source']
+            assert request['protocol'] == experiment['protocol']
+            expected = list(range(5000, 100001, 5000)) if phase == 'supervised' else list(range(0, 10001, 1000))
+            history = info['history']
+            assert [row['step'] for row in history] == expected
+            assert all(row['validation']['games'] == 512 and row['validation']['seed_start'] == 400000 for row in history)
+            selected = max(history, key=lambda row: row['validation']['mean_max_exponent'])
+            assert selected['step'] == info['best_step']
+            metrics = selected['validation']
+            assert metrics['mean_max_exponent'] == info['best_score']
+            model = read(stage / 'best/model.json')
+            digest = sha(stage / 'best/params.msgpack')
+            assert digest == done['best_params_sha256'] == info['best_params_sha256'] == model['params_sha256']
+            assert model['architecture'] == ('plain' if group == 'plain_distill_td' else 'd4')
+            params = list(leaves(serialization.msgpack_restore((stage / 'best/params.msgpack').read_bytes())))
+            assert sum(p.size for p in params) == count and all(np.isfinite(p).all() for p in params)
+            relative = Path(group) / f'seed{seed}' / phase
+            for name in ('model.json', 'params.msgpack'):
+                copy(stage / 'best' / name, DEST / 'checkpoints' / relative / name)
+            for name in ('training.json', 'complete.json', 'request.json'):
+                copy(stage / name, DEST / 'curves' / relative / name)
+            log = RUN / 'stage-logs' / f'{group}-seed{seed}-{phase}.txt'
+            if log.exists():
+                copy(log, DEST / 'logs' / log.name)
+            stage_name = f'{group}-seed{seed}-{phase}'
+            row = {'group': group, 'seed': seed, 'phase': phase, 'actual_updates': budget,
+                   'best_step': info['best_step'], 'parameter_count': count,
+                   'validation_games': 512, 'mean_max_exponent': metrics['mean_max_exponent'],
+                   'reach_256': metrics['reach_rates']['256'], 'reach_512': metrics['reach_rates']['512'],
+                   'reach_1024': metrics['reach_rates']['1024'], 'mean_max_tile': metrics['mean_max_tile'],
+                   'mean_tile_sum': metrics['mean_tile_sum'], 'mean_moves': metrics['mean_moves'],
+                   'environment_transitions': info['environment_transitions'],
+                   'training_seconds': info['elapsed_seconds'],
+                   'all_process_attempt_seconds': sum(t['seconds'] for t in timings if t['stage'] == stage_name),
+                   'compile_seconds': info.get('training_compile_seconds'),
+                   'update_execution_seconds': info.get('training_execution_seconds'),
+                   'params_sha256': digest, 'initial_params_sha256': request['initial_params_sha256'],
+                   'upstream_sha256': request['upstream_sha256'],
+                   'teacher_sha256': request.get('teacher_sha256'),
+                   'checkpoint': str(Path('checkpoints') / relative), 'evaluation_scope': 'validation_only'}
+            records.append(row)
+            audits.append({'stage': stage_name, 'checks': 'PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes'})
+            for entry in history:
+                m = entry['validation']
+                curve_rows.append({'group': group, 'seed': seed, 'phase': phase, 'step': entry['step'],
+                                   'loss': entry.get('loss'), 'mean_max_exponent': m['mean_max_exponent'],
+                                   'reach_256': m['reach_rates']['256'], 'reach_512': m['reach_rates']['512'],
+                                   'reach_1024': m['reach_rates']['1024'],
+                                   'heldout_rmse': m.get('heldout_afterstate_rmse')})
+for rows, name in ((records, 'completed-training.csv'), (curve_rows, 'validation-curves.csv')):
+    with (DEST / name).open('w', newline='') as stream:
+        writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+for record in records:
+    if record['phase'] == 'td' and record['group'] != 'd4_scratch_td':
+        supervised = next(r for r in records if r['group'] == record['group'] and r['seed'] == record['seed'] and r['phase'] == 'supervised')
+        assert record['upstream_sha256'] == supervised['params_sha256']
+    if record['group'] == 'd4_scratch_td':
+        assert record['upstream_sha256'] is None and record['teacher_sha256'] is None
+for seed in (0, 1):
+    a = next(r for r in records if r['group'] == 'd4_distill_td' and r['seed'] == seed and r['phase'] == 'supervised')
+    b = next(r for r in records if r['group'] == 'd4_scratch_td' and r['seed'] == seed)
+    assert a['initial_params_sha256'] == b['initial_params_sha256']
+assert len(records) == 11 and len(curve_rows) == 157
+for name in ('checks-release-pytest.txt', 'checks-platform-allocator-pytest.txt',
+             'teacher-manifest.json', 'runtime-freeze.txt', 'hardware-model-audit.json',
+             'allocator-recovery-20261101.json', 'full-validation-memory-probe.json'):
+    path = SOURCE / 'docs/ablations/20261031/evidence' / name
+    if path.exists():
+        copy(path, DEST / 'evidence' / name)
+copy(SOURCE / 'docs/ablations/20261031/LOCAL_RUNTIME.md', DEST / 'RUNTIME.md')
+write(DEST / 'audit.json', {'all_passed': True, 'stages': audits,
+                          'A_B_shared_initialization_verified_for_seeds': [0, 1],
+                          'scratch_teacher_and_upstream_absent': True,
+                          'TD_upstream_hashes_match_supervised_best': True})
+snapshot = {'created_utc': datetime.now(UTC).isoformat(), 'repository': '2986002971/sym2048',
+            'publication_branch': 'experiment/completed-ablation-results-20261101',
+            'base_commit': BASE, 'frozen_training_commit': FROZEN,
+            'evaluation_scope': 'validation_only', 'formal_test_games': 0,
+            'completed_training_stages': len(records), 'completed_TD_models': 7,
+            'completed_supervised_diagnostics': 4, 'validation_curve_rows': len(curve_rows),
+            'records': records, 'excluded_unfinished_stages': excluded,
+            'source': experiment['source']}
+write(DEST / 'snapshot.json', snapshot)
+copy(Path(__file__), DEST / 'evidence/export_completed_snapshot.py.txt')
+print(json.dumps({'destination': str(DEST), 'completed_stages': len(records),
+                  'completed_TD_models': 7, 'validation_rows': len(curve_rows),
+                  'unfinished_stages_excluded': excluded}, indent=2))

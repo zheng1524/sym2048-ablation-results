@@ -1,0 +1,198 @@
+{
+  "base_commit": "6eb6db44f0a3d70c15b92b5200404bb2b033d686",
+  "frozen_training_commit": "8258a9eda7b5fba0dda9d4032737c58091f8bcc4",
+  "protected_file_count": 38,
+  "every_original_blob_and_mode_identical": true,
+  "protected_files": {
+    ".gitignore": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "a82fd58bc8b879b1de74d4ac37294394ad03104c"
+    },
+    ".python-version": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "e4fba2183587225f216eeada4c78dfab6b2e65f5"
+    },
+    "AGENTS.md": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "8de1539868473a45ef82d50b17c0f0b18060cfa8"
+    },
+    "LICENSE": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "3be6c199f9e5ac0bccbfbad63a2dcfd28c440dc7"
+    },
+    "README.en.md": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "f93673b2ee2fc5503776fc72e3a394ec0c2355d4"
+    },
+    "README.md": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "30fb904e7077bd5cd75f65a8ab5f8df8f6c20f30"
+    },
+    "RUN_STATUS.md": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "9915966ce0736b489f9b1cd91099f9eef7bbf964"
+    },
+    "game2048/__init__.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "167e25b646223d5ea0a829a24a46d4541447242a"
+    },
+    "game2048/__main__.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "3887eb121e582e7fc082e6260dd6b447e6db5496"
+    },
+    "game2048/artifacts.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "313a5b78f2f856b7a10deeae8fcaa5b76c8dd927"
+    },
+    "game2048/cli.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "3c21355931694d37b673d29cbe69585eaf5971af"
+    },
+    "game2048/comparison.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "3978662610d914a1c2b44bd8050608d5ac663507"
+    },
+    "game2048/config.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "4df021c62e8caabdba1f8aa47619c68a24a07303"
+    },
+    "game2048/envs/__init__.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "cec42b315304c652078cb20ce8b1d3a94679ac0f"
+    },
+    "game2048/envs/game2048.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "c3b8aaa3dbda2f3d078b367c0ecf2cd3a22f4b86"
+    },
+    "game2048/evaluation.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "51952af14151bd19f11b3737c3a6406227266952"
+    },
+    "game2048/evaluation_jobs.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "5b6b17c209a8bd56f79f900a98b299fa029c45d6"
+    },
+    "game2048/experiments.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "68d4579c36ddd413f41bcf9aa44d0ed5be29a0b0"
+    },
+    "game2048/jax_env.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "a0f588123e4b64c5fe98178d642c8b59578e094e"
+    },
+    "game2048/kernels.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "298146614b5de14390826129435c055a69b77fb0"
+    },
+    "game2048/network.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "f74657e140331ad9bf1de9c9e771eb411185c233"
+    },
+    "game2048/planner.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "957526b8c20aa391e13ee8a59b4b7ffc00110345"
+    },
+    "game2048/rules.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "da21e68688c9abcbe4f8b4890085043be0e114e7"
+    },
+    "game2048/teacher.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "4ca9e39e44e115250eac9d91d54a58cfee80cd31"
+    },
+    "game2048/training.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "a1de8110f19bb0cefaa464ed93045f64dd40c6a2"
+    },
+    "game2048/wrappers/__init__.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    "pyproject.toml": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "e983711ed6ccc537a58cb238ff8a8f096322d9df"
+    },
+    "scripts/profile_hotpaths.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "4d7f2cd8aeae859af5e254870321ab9505c83f6b"
+    },
+    "tests/__init__.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "8a4faf1462932247a9262829d0511cac7b6d735b"
+    },
+    "tests/reference.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "2ba739a2407b9fd1ef7cebeb39b516f3fb2e90d0"
+    },
+    "tests/test_artifacts.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "a7608427506886eaffc453917b45290c11c67ee4"
+    },
+    "tests/test_comparison.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "23c19192ddc5bd45a260b3d74371e719152b40a1"
+    },
+    "tests/test_network.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "124d92e56cd3079a3b1d5b3bb79d5a62f45f1539"
+    },
+    "tests/test_planner.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "6f4daf96ad8a5a30eb13cbc39ab2d43ec1d2c8d5"
+    },
+    "tests/test_rules.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "09dd9cedced7770290c1b2a69ae6af1fc98e7b0d"
+    },
+    "tests/test_teacher.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "abc868ae50c163a745506e92fe59fc445b2ac994"
+    },
+    "tests/test_training.py": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "c790ae212a0168e6b377cfa49e4a5fcdcb7333c2"
+    },
+    "uv.lock": {
+      "mode": "100644",
+      "type": "blob",
+      "git_blob": "af3d82bf92a9c9885b7444f13a9f15ae7bfba07c"
+    }
+  }
+}

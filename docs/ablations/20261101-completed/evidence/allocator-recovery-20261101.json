@@ -1,0 +1,38 @@
+{
+  "reason": "First full heldout validation exhausted fragmented GPU BFC memory at supervised step 5000. Full-size update, games, heldout validation and student collection passed under the platform allocator.",
+  "change": {
+    "XLA_PYTHON_CLIENT_ALLOCATOR": {
+      "before": "default BFC allocator",
+      "after": "platform"
+    }
+  },
+  "training_algorithm_changed": false,
+  "protocol_changed": false,
+  "source_commit": "8258a9eda7b5fba0dda9d4032737c58091f8bcc4",
+  "A_recovery_step": 0,
+  "B_preserved": {
+    "0": {
+      "updates": 10000,
+      "params_sha256": "4dab4cb345a41925a99c2c5c53227aadc3e672bb24a90a611bd33370eb38a445",
+      "history_sha256": "c5596fde5f8840feada90bf44082e817647562360e3af5a96fd59b677bbe5725",
+      "best_score": 6.99609375,
+      "best_step": 10000
+    },
+    "1": {
+      "updates": 10000,
+      "params_sha256": "a813e5c107733ca1fb86408b1a7084bf03b391d760798ea817640c17a42321db",
+      "history_sha256": "c3da5e660bcda07717e1b66486174e8d681542d497027c0ab1ae0108b7f65d07",
+      "best_score": 6.99609375,
+      "best_step": 8000
+    },
+    "2": {
+      "updates": 10000,
+      "params_sha256": "3030c0b2644f3cd32d801557763e3ffa3f22a6caf4b3724434ed52747831003b",
+      "history_sha256": "22c143ffcfff7c939840965a8a2acf4de003e9c6198b161232f91e730c3fe452",
+      "best_score": 7.0,
+      "best_step": 9000
+    }
+  },
+  "B_hashes_and_validation_histories_verified_after_resume": true,
+  "resumed_worker_pid": 227980
+}
