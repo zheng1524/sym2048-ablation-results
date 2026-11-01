@@ -1,0 +1,11 @@
+{
+  "checked_at_utc": "2026-11-01T12:49:09.484888+00:00",
+  "uploaded": false,
+  "remote_branch_created": false,
+  "pull_request_created": false,
+  "reason": "GitHub HTTP 403: Permission to 2986002971/sym2048.git denied to zheng1524.",
+  "repository": "2986002971/sym2048",
+  "publication_branch": "experiment/completed-ablation-results-20261101",
+  "remote_main_sha_unchanged": "6eb6db44f0a3d70c15b92b5200404bb2b033d686",
+  "prepared_content_commit": "ab7ad330c1de28a16afa6ebeb74c42f45c86d805"
+}

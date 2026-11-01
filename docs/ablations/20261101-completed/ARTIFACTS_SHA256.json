@@ -1,5 +1,7 @@
 {
   "PR_BODY.md": "7f5fc81ede792c111692e35cf94e82f5c3835d6ee2472102a4b2c9b404accead",
+  "PUSH_HANDOFF.md": "3947a513b97829354807ce2bee39880c6b8f79599bef5d1fa07e8c995ba8eb9d",
+  "PUSH_STATUS.json": "9afb6cc2b4373f25bac400534d82ee44ae2015ad5fdb3d72e63fd65b1427ac8c",
   "README.md": "822c7f3394796102932ccc6c9f3f39ecb522437a9e08372b44c19520965fe7e9",
   "RUNTIME.md": "7f50170994b79de9e4c2b94c42deb50e8362e66be33181b5e31f2695cfab73f9",
   "VALIDATION.md": "a45bbe0d011d0bb7b6bb7ac8bd02b876d55c3f0c9dba7183eeb7f1971d2f6300",
@@ -68,6 +70,7 @@
   "evidence/github-access-before-push.json": "7aadae18f11df2721d7c089ec946903cf119cf152b8e5e9276bbbf217d632158",
   "evidence/hardware-model-audit.json": "966915a81134bc4ffe5187a7e9fc9a0c08aca4f84c2ba0a5c109e40b26d37e54",
   "evidence/original-files-unchanged.json": "5990837e5514e224d8d642a1becc9f09a70a13b88a31cff2637dfcd5a89fc99d",
+  "evidence/push-attempt-403.txt": "60d6a485c8f1c2f37a0c8ed8b84f430cb1b85409f96403a8e81e3d84df4a1458",
   "evidence/runtime-freeze.txt": "d256609e50296186a1f692085d6bd488a05b0918fa159bc1f25c735dcd8eb2a2",
   "evidence/snapshot-format.txt": "d6618aac860f8215745a8e56a5cc32d7f88af148570217bf95dcb18d3ed520d1",
   "evidence/snapshot-pytest.txt": "49364874d272ebe50f47001713243ffa98092f706d1ce740dcd6452fb81dc1e4",

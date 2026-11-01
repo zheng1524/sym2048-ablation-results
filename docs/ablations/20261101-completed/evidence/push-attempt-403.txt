@@ -1,0 +1,2 @@
+remote: Permission to 2986002971/sym2048.git denied to zheng1524.
+fatal: 无法访问 'https://github.com/2986002971/sym2048.git/'：The requested URL returned error: 403
