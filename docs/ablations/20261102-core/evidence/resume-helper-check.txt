@@ -1,0 +1,4 @@
+PASS: bash -n ops/resume_practical.sh
+PASS: bash ops/resume_practical.sh --check
+Frozen source/runtime verified under recorded CUDA flags and installed package versions.
+No training updates executed; helper does not auto-start on boot.

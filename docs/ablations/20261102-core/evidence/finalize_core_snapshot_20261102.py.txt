@@ -1,0 +1,283 @@
+"""Audit formal games and a shutdown-safe resume checkpoint without training."""
+
+import csv
+import hashlib
+import json
+import os
+import shlex
+import shutil
+import subprocess
+import tarfile
+from datetime import UTC, datetime
+from pathlib import Path
+
+import jax
+import numpy as np
+from flax import serialization
+from flax.training.train_state import TrainState
+
+from game2048.ablations.config import from_json, model_spec
+from game2048.ablations.models import initialize, parameter_hash
+from game2048.ablations.provenance import source_identity
+from game2048.ablations.state import STREAMS, read_recovery
+from game2048.training import _optimizer
+
+ROOT = Path.cwd()
+SOURCE = Path('/home/liu/other/sym2048-ablation')
+RUN = SOURCE / 'runs/ablations-20261031-full'
+DEST = ROOT / 'docs/ablations/20261102-core'
+BASE = '6eb6db44f0a3d70c15b92b5200404bb2b033d686'
+NOW = datetime.now(UTC).isoformat()
+
+
+def read(path):
+    return json.loads(path.read_text())
+
+
+def write(path, data):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False, allow_nan=False) + '\n')
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def copy(src, dst):
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(src, dst)
+    assert sha(src) == sha(dst), str(src)
+
+
+summary = read(RUN / 'summary.json')
+assert summary['formal_core_complete'] and not summary['smoke']
+frozen = read(RUN / 'frozen.json')
+experiment = read(RUN / 'experiment.json')
+assert source_identity() == experiment['source']
+test_rows = []
+total_games = 0
+for group in ('d4_distill_td', 'd4_scratch_td', 'plain_distill_td'):
+    for seed in (0, 1, 2):
+        path = RUN / group / f'seed{seed}'
+        metrics = read(path / 'test/metrics.json')
+        done = read(path / 'td/complete.json')
+        assert metrics['params_sha256'] == done['best_params_sha256'] == frozen[f'{group}/{seed}']
+        assert metrics['games'] == 2000 and metrics['seed_start'] == 500000
+        assert not metrics['smoke'] and metrics['mode'] == 'greedy'
+        assert metrics['source_sha256'] == experiment['source']['source_sha256']
+        assert sha(path / 'test/games.csv') == metrics['csv_sha256']
+        rows = list(csv.DictReader((path / 'test/games.csv').open()))
+        assert [int(row['seed']) for row in rows] == list(range(500000, 502000))
+        exponents = np.array([int(row['max_exponent']) for row in rows])
+        assert float(exponents.mean()) == metrics['mean_max_exponent']
+        for tile in (256, 512, 1024):
+            rate = sum(int(row['max_tile']) >= tile for row in rows) / len(rows)
+            assert abs(rate - metrics['reach_rates'][str(tile)]) < 1e-12
+        total_games += len(rows)
+        for name in ('metrics.json', 'games.csv'):
+            copy(path / 'test' / name, DEST / 'results' / group / f'seed{seed}' / name)
+        test_rows.append({
+            'group': group, 'seed': seed, 'games': len(rows),
+            'mean_max_exponent': metrics['mean_max_exponent'],
+            'reach_256': metrics['reach_rates']['256'],
+            'reach_512': metrics['reach_rates']['512'],
+            'params_sha256': metrics['params_sha256'],
+            'csv_sha256': metrics['csv_sha256'],
+        })
+assert total_games == 18000
+with (DEST / 'formal-test-summary.csv').open('w', newline='') as stream:
+    writer = csv.DictWriter(stream, fieldnames=list(test_rows[0]))
+    writer.writeheader()
+    writer.writerows(test_rows)
+for name in ('summary.json', 'frozen.json', 'stage-timings.json',
+             'shutdown-pause-request-20261102.json'):
+    copy(RUN / name, DEST / name)
+
+stage = RUN / 'd4_scratch_practical/seed0/td'
+request = read(stage / 'request.json')
+cfg = from_json(read(RUN / 'practical/protocol.json'))
+assert request['source'] == experiment['source']
+assert request['protocol'] == cfg.json()
+assert cfg.td.learning_rate == 3e-4 and cfg.td.updates == 100000
+assert request['upstream_sha256'] is None and 'teacher_sha256' not in request
+model, initial = initialize(model_spec('d4_scratch_practical'), 0)
+template = TrainState.create(apply_fn=model.apply, params=initial, tx=_optimizer(cfg.td.learning_rate))
+state, streams, boards, pool, best, info = read_recovery(stage / 'recovery.msgpack', template, request)
+assert int(state.step) == info['step'] == 41000
+assert info == read(stage / 'training.json')
+assert set(streams) == set(STREAMS) and boards.shape == (128, 3, 3)
+assert all(np.isfinite(np.asarray(x)).all() for x in jax.tree.leaves(state.opt_state))
+assert all(np.isfinite(np.asarray(x)).all() for x in jax.tree.leaves(state.params))
+assert all(np.isfinite(np.asarray(x)).all() for x in jax.tree.leaves(best))
+assert parameter_hash(initial) == request['initial_params_sha256']
+assert info['environment_transitions'] == 41000 * 128 * 32
+for kind, expected in [('latest', info['params_sha256']), ('best', info['best_params_sha256'])]:
+    assert sha(stage / kind / 'params.msgpack') == expected
+    assert read(stage / kind / 'model.json')['params_sha256'] == expected
+for name in ('request.json', 'training.json', 'recovery.msgpack', 'interrupted.json', 'progress.json'):
+    copy(stage / name, DEST / 'resume/d4_scratch_practical/seed0/td' / name)
+for kind in ('best', 'latest'):
+    for name in ('model.json', 'params.msgpack'):
+        copy(stage / kind / name, DEST / 'resume/d4_scratch_practical/seed0/td' / kind / name)
+selection = read(RUN / 'practical/selection.json')
+assert selection['chosen']['learning_rate'] == cfg.td.learning_rate
+for name in ('request.json', 'selection.json', 'protocol.json'):
+    copy(RUN / 'practical' / name, DEST / 'practical' / name)
+for pilot in sorted((RUN / 'practical').glob('pilot-*')):
+    for name in ('protocol.json', 'td/request.json', 'td/training.json', 'td/complete.json',
+                 'td/best/model.json', 'td/best/params.msgpack'):
+        copy(pilot / name, DEST / 'practical' / pilot.name / name)
+    assert read(pilot / 'td/complete.json')['updates'] == 2000
+
+pause = {
+    'status': 'paused_by_user', 'saved_utc': NOW, 'reason': 'Shutdown requested by user',
+    'group': 'd4_scratch_practical', 'seed': 0, 'phase': 'td', 'resume_step': 41000,
+    'interrupted_observed_step': read(stage / 'interrupted.json')['observed_step'],
+    'target_updates': 100000, 'remaining_seeds_not_started': [1, 2],
+    'best_validation_mean_max_exponent': info['best_score'], 'best_step': info['best_step'],
+    'core_training_and_test_complete': True, 'formal_test_games': total_games,
+    'full_recovery_sha256': sha(stage / 'recovery.msgpack'),
+    'current_params_sha256': parameter_hash(state.params),
+    'best_params_sha256': parameter_hash(best),
+    'restoration_audit': {
+        'method': 'CUDA read_recovery into actual model and AdamW TrainState under recorded runtime; no training updates',
+        'strict_request_source_protocol_match': True, 'optimizer_restored_and_finite': True,
+        'parameters_and_best_hashes_verified': True, 'random_streams_restored': sorted(streams),
+        'boards_shape': list(boards.shape), 'environment_transitions': info['environment_transitions'],
+        'pool_shape': list(pool.shape),
+    },
+}
+
+# Keep an independently verified local archive outside the live run tree.
+archive = SOURCE.parent / 'sym2048-shutdown-checkpoint-20261102-step41000.tar.gz'
+assert not archive.exists()
+with tarfile.open(archive, 'w:gz', compresslevel=1) as tar:
+    for prefix in ('resume', 'practical'):
+        tar.add(DEST / prefix, arcname=prefix)
+with tarfile.open(archive, 'r:gz') as tar:
+    for item in tar.getmembers():
+        if item.isfile():
+            extracted = tar.extractfile(item)
+            assert extracted is not None
+            assert hashlib.sha256(extracted.read()).hexdigest() == sha(DEST / item.name)
+pause['independent_local_backup'] = {'path': str(archive), 'bytes': archive.stat().st_size,
+                                     'sha256': sha(archive), 'all_members_byte_verified': True}
+write(DEST / 'PAUSE_STATUS.json', pause)
+write(RUN / 'shutdown-pause-20261102.json', pause)
+live_status_path = SOURCE / 'docs/ablations/20261031/JOB_STATUS.json'
+live_status = read(live_status_path)
+live_status.update(status='paused_by_user', updated_utc=NOW, pause=pause)
+write(live_status_path, live_status)
+
+# The helper restores the recorded runtime and calls the existing practical CLI.
+flags = request['source']['runtime']['flags']
+lines = ['#!/usr/bin/env bash', 'set -euo pipefail', f'cd {shlex.quote(str(SOURCE))}',
+         'export PATH="/home/liu/.local/bin:/usr/local/cuda/bin:$PATH"']
+for name, value in flags.items():
+    lines.append(f'unset {name}' if value is None else f'export {name}={shlex.quote(value)}')
+lines.append('export XLA_PYTHON_CLIENT_ALLOCATOR=platform')
+lines += [
+    '/home/liu/.local/bin/uv run --no-sync python - <<\'PY\'',
+    'import json', 'from pathlib import Path',
+    'from game2048.ablations.provenance import source_identity',
+    f'r = Path({str(RUN)!r})',
+    "request = json.loads((r / 'd4_scratch_practical/seed0/td/request.json').read_text())",
+    "assert source_identity() == request['source'], 'Frozen source/runtime mismatch'",
+    "assert (r / 'd4_scratch_practical/seed0/td/recovery.msgpack').is_file()",
+    "print('Frozen source/runtime verified; continuing practical experiment from local recovery.')",
+    'PY',
+    'if [ "${1:-}" = "--check" ]; then exit 0; fi',
+    'exec /home/liu/.local/bin/uv run --no-sync python -m game2048.ablations practical ' + shlex.quote(str(RUN)) + ' --protocol-file ' + shlex.quote(str(RUN / 'protocol.json')),
+]
+helper = DEST / 'ops/resume_practical.sh'
+helper.parent.mkdir(parents=True, exist_ok=True)
+helper.write_text('\n'.join(lines) + '\n')
+helper.chmod(0o755)
+subprocess.run(['bash', '-n', str(helper)], check=True)
+active_helper = SOURCE / 'docs/ablations/20261102-core/ops/resume_practical.sh'
+copy(helper, active_helper)
+active_helper.chmod(0o755)
+
+audit = read(DEST / 'audit.json')
+audit.update(formal_test_models_verified=9, formal_games_verified=total_games,
+             formal_csv_hashes_and_metrics_recomputed=True, frozen_checkpoint_hashes_verified=True,
+             paused_checkpoint_restore= pause['restoration_audit'])
+write(DEST / 'audit.json', audit)
+snapshot = read(DEST / 'snapshot.json')
+snapshot.update(evaluation_scope='formal_core_complete_practical_paused', formal_test_games=18000,
+                practical_complete=False, practical_resume_step=41000,
+                full_practical_recovery_included=True, created_utc=NOW)
+write(DEST / 'snapshot.json', snapshot)
+copy(Path(__file__), DEST / 'evidence/finalize_core_snapshot_20261102.py.txt')
+
+group_lines = []
+for group, label in [('d4_distill_td', 'A：D4 蒸馏＋TD'), ('d4_scratch_td', 'B：D4 从零 TD'),
+                     ('plain_distill_td', 'C：普通 CNN 蒸馏＋TD')]:
+    records = [row for row in test_rows if row['group'] == group]
+    avg = lambda key: sum(row[key] for row in records) / len(records)
+    group_lines.append(f"| {label} | {avg('mean_max_exponent'):.6f} | {avg('reach_256'):.2%} | {avg('reach_512'):.2%} |")
+text = '''# 核心正式结果与关机断点（2026-11-02）
+
+A/B/C 的三个训练种子全部完成。9 个冻结 TD 模型各使用相同的 2,000 个正式测试种子
+（500000–501999），共 **18,000 局**。下表为三个训练种子的均值。
+
+| 实验组 | 正式测试平均最大指数 | 达到 256 | 达到 512 |
+|---|---:|---:|---:|
+''' + '\n'.join(group_lines) + '''
+
+A−B 平均最大指数差为 1.641；A−C 为 0.119。A 比 C 高的方向在三个训练种子均一致。
+完整比较及配对区间见 summary.json；其中区间只描述给定已拟合模型后的游戏随机性，
+不覆盖训练随机性。A−B 匹配 TD 预算，A 另有完整教师和监督训练成本；A−C 参数及
+更新预算近似匹配，不代表 FLOPs 或实际耗时相同。未把历史主线或验证集结果混入本表。
+
+用户要求关机，B_practical 已暂停于 **seed 0 / 第 41,000 步**（目标 100,000 步）。
+中断时观察到第 41,191 步，额外 191 步没有进入完整验证检查点，恢复时会重放。
+seed 1、2 尚未开始。学习率由 seed 3 的三个 2,000 步 pilot 仅按验证集选出，为 3e-4。
+目前最佳验证平均最大指数为 7.970703125，来自第 32,000 步；补充实验没有正式测试结果。
+
+本快照只在新的 docs/ablations/20261102-core/ 命名空间增加文件。
+原始基线 6eb6db44f0a3d70c15b92b5200404bb2b033d686 的 38 个既有文件及文件模式保持一致。
+训练源码仍为 8258a9eda7b5fba0dda9d4032737c58091f8bcc4；所有源码 SHA256 均已核对。
+原仓库与两个仓库的 main 均未修改；仅更新独立实验仓库现有实验分支。
+
+目录沿用先前快照的组织：
+
+- checkpoints/：9 个最终 TD best 及 6 个完整监督阶段 best，两文件模型格式。
+- curves/、completed-training.csv、validation-curves.csv：15 个已完成阶段，219 条验证记录。
+- results/、formal-test-summary.csv：9 个正式测试 CSV 与指标文件，CSV 共 18,000 局。
+- summary.json、frozen.json：正式聚合结果、比较、模型冻结权重哈希。
+- practical/：学习率 pilot 权重及曲线、选取规则、协议。
+- resume/：暂停阶段完整 recovery.msgpack、latest/best、请求、验证历史和中断记录。
+- PAUSE_STATUS.json：恢复状态审计、完整断点 SHA256、独立本地备份信息。
+- audit.json、evidence/、ARTIFACTS_SHA256.json：模型、预算、源文件、测试数据和文件哈希审计。
+
+完整断点已使用实际模型和 AdamW TrainState 在原 CUDA 数值环境中成功反序列化，核对当前及 best
+参数哈希、优化器有限值、全部独立随机流、128 个环境棋盘及协议，未执行训练更新。
+冻结训练源码没有改动，因此沿用同源码此前通过的 38 项测试与静态检查证据；本次新增
+检查针对 15 份模型、9 个测试 CSV、18,000 局指标和暂停断点，未声称重新执行全套训练或测试。
+
+关机后，在本机原工作区运行（不会自动开机启动）：
+
+```bash
+bash /home/liu/other/sym2048-ablation/docs/ablations/20261102-core/ops/resume_practical.sh
+```
+
+该命令先严格校验冻结源码及依赖和数值环境，再调用原有 practical 工作流：
+复用已完成 pilot、从 seed 0 完整恢复状态继续，随后训练 seed 1、2，全部冻结后统一正式测试。
+核心 A/B/C 结果不会重跑。请只启动一个训练实例。
+本机虚拟环境和 runs/ 保留完整；另有独立 tar.gz 备份，逐成员比对成功，位置见 PAUSE_STATUS.json。
+如需远程恢复，可将 resume/ 中的暂停阶段和 practical/ 拷回同一运行根目录的对应位置，
+并保留其余本地已完成核心训练元数据；不应只用 best 权重代替完整训练恢复状态。
+
+本快照取代 20261101-completed 快照作为当前结果入口；先前快照保留作为历史记录。
+发布仓库：https://github.com/zheng1524/sym2048-ablation-results ，实验分支：
+experiment/completed-ablation-results-20261101 。未改变仓库可见性设置。
+'''
+(DEST / 'README.md').write_text(text)
+write(DEST / 'ARTIFACTS_SHA256.json', {
+    str(p.relative_to(DEST)): sha(p) for p in sorted(DEST.rglob('*'))
+    if p.is_file() and p.name != 'ARTIFACTS_SHA256.json'
+})
+print(json.dumps({'snapshot': str(DEST), 'core_models': 9, 'supervised_models': 6,
+                  'formal_test_games': total_games, 'resume_step': info['step'],
+                  'backup': str(archive), 'backup_bytes': archive.stat().st_size}, indent=2))

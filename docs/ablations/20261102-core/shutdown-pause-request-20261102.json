@@ -1,0 +1,13 @@
+{
+  "requested_utc": "2026-11-02T05:37:37.337264+00:00",
+  "reason": "User requested checkpoint and pause before shutdown",
+  "worker_pid": 344202,
+  "process_group": 344202,
+  "durable_step_before_signal": 41000,
+  "current_progress_before_signal": {
+    "status": "training",
+    "step": 41100
+  },
+  "signal": "SIGINT",
+  "recovery": "last atomic validation snapshot; no partial-update snapshot"
+}

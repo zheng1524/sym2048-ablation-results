@@ -1,0 +1,100 @@
+{
+  "all_passed": true,
+  "stages": [
+    {
+      "stage": "d4_distill_td-seed0-supervised",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "d4_distill_td-seed0-td",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "d4_distill_td-seed1-supervised",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "d4_distill_td-seed1-td",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "d4_distill_td-seed2-supervised",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "d4_distill_td-seed2-td",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "d4_scratch_td-seed0-td",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "d4_scratch_td-seed1-td",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "d4_scratch_td-seed2-td",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "plain_distill_td-seed0-supervised",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "plain_distill_td-seed0-td",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "plain_distill_td-seed1-supervised",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "plain_distill_td-seed1-td",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "plain_distill_td-seed2-supervised",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    },
+    {
+      "stage": "plain_distill_td-seed2-td",
+      "checks": "PASS: full budget, validation schedule, selection, source/protocol, finite parameters and all checkpoint hashes"
+    }
+  ],
+  "A_B_shared_initialization_verified_for_seeds": [
+    0,
+    1,
+    2
+  ],
+  "scratch_teacher_and_upstream_absent": true,
+  "TD_upstream_hashes_match_supervised_best": true,
+  "formal_test_models_verified": 9,
+  "formal_games_verified": 18000,
+  "formal_csv_hashes_and_metrics_recomputed": true,
+  "frozen_checkpoint_hashes_verified": true,
+  "paused_checkpoint_restore": {
+    "method": "CUDA read_recovery into actual model and AdamW TrainState under recorded runtime; no training updates",
+    "strict_request_source_protocol_match": true,
+    "optimizer_restored_and_finite": true,
+    "parameters_and_best_hashes_verified": true,
+    "random_streams_restored": [
+      "augment",
+      "collect",
+      "heldout",
+      "sample",
+      "td_env",
+      "td_reset",
+      "td_tie"
+    ],
+    "boards_shape": [
+      128,
+      3,
+      3
+    ],
+    "environment_transitions": 167936000,
+    "pool_shape": [
+      0
+    ]
+  }
+}

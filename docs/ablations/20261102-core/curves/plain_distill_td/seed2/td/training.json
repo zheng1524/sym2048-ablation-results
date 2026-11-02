@@ -1,0 +1,695 @@
+{
+  "request": {
+    "phase": "td",
+    "group": "plain_distill_td",
+    "seed": 2,
+    "model": {
+      "architecture": "plain",
+      "width": 83,
+      "blocks": 2,
+      "head_width": 64
+    },
+    "protocol": {
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "smoke": false,
+      "validation_seed": 400000,
+      "validation_games": 512,
+      "test_seed": 500000,
+      "test_games": 2000,
+      "evaluation_batch": 256,
+      "gradient_microbatch_size": 512,
+      "supervised": {
+        "batch_size": 1024,
+        "learning_rate": 0.0003,
+        "max_updates": 100000,
+        "warmup_updates": 5000,
+        "validation_every": 5000,
+        "collect_every": 1000,
+        "collection_envs": 128,
+        "collection_steps": 256,
+        "pool_capacity": 262144
+      },
+      "td": {
+        "updates": 10000,
+        "learning_rate": 3e-05,
+        "trace_lambda": 0.8,
+        "envs": 128,
+        "horizon": 32,
+        "validation_every": 1000
+      },
+      "version": "distillation-d4-20261031-v1"
+    },
+    "initial_params_sha256": "50ca47d87e8c75c49c54155923ad27381abfa8fc65df0db32194ef1bdb1597b7",
+    "upstream_sha256": "4e148c3bfd3f02d9b99976448567fb7050bf5dbbbf3eb6a445cec2c8b49f0f48",
+    "source": {
+      "commit": "8258a9eda7b5fba0dda9d4032737c58091f8bcc4",
+      "source_sha256": "8fbdcb7947509adde2dd915dbd33a50cad76fc0035d81fa8b3f00b1d6703939e",
+      "files": {
+        "game2048/__init__.py": "c0f355425f50b8d928a9a6d9fb3de71b03758386c13354ba38470a3e52bbea0f",
+        "game2048/__main__.py": "013a4ca61daf29cbdaefc91c1f1d76b4b77de1f7a2120d3a071cbe49669bf05e",
+        "game2048/ablations/__init__.py": "cd6733d7bc45b0fb4f488b1bf47d7095c817c82c3fa2f12b2c042db44bd8ac9f",
+        "game2048/ablations/__main__.py": "377479a3e3e5702d82129487b7a6ea711ff9ce9d8a504c53d9741078b96345e1",
+        "game2048/ablations/audit.py": "9cc0897685eee946c8bc5b1d02174682abf7a65f714a87d6e746a3f52e498b2b",
+        "game2048/ablations/config.py": "398732daf050524845b4d9048bdce1c9ae45e8521187330c71264dc0e93beaac",
+        "game2048/ablations/evaluation.py": "47024c438284ab5444b422c5e12a0f7d0b672350554a984a965cde11ae0560dc",
+        "game2048/ablations/models.py": "f045b1aa1f4eef4b5dc89e990b1c13f029ad9d2f27ffa273deec8293fb35e280",
+        "game2048/ablations/optimization.py": "fd19c67c89c848d98db339a00774cfe72c033c9b88e0c86412e4ccf5b0dfcc93",
+        "game2048/ablations/provenance.py": "259393fe3742031a975cf7417a48645fa3a97d53e36d091fe3460679bb4d26de",
+        "game2048/ablations/state.py": "08d6472e9bc8066cf3dc7b31cb1759cbde71556a9a71245ec5cbe29e49039a2b",
+        "game2048/ablations/summary.py": "3e6203e2fbec4be791e82dcf914a35f70b813419aa810b512f14dbf838b5893c",
+        "game2048/ablations/supervised.py": "ea685ec5584f124c0e0ee1ec214107e4d3b115e965c193a13031f3bbfe3a9b7b",
+        "game2048/ablations/td.py": "daf64984f7e0f6bd7704ceef34959db4d50dc288a4271f9c79bea6ac502accd7",
+        "game2048/ablations/workflow.py": "12524b7c896e8fe3cb5075f0ad16172b213ec5d09f8da9d8817fcb014f44063e",
+        "game2048/artifacts.py": "159fd166999279a6c4a485eaad011e852aa22fdacb110f2c941bc85f09c9e017",
+        "game2048/cli.py": "935e7bfa69ee5bf79927af4993699074117de4c5d553e7e622dad0488de6482b",
+        "game2048/comparison.py": "d99298d3ec54d2b762920f56449af3c7b67823e6aca453047ddcd26e95dbcfb6",
+        "game2048/config.py": "dc2af5d89ccaad0325d27118f46224ea02520197f6104c9fce1598911b495868",
+        "game2048/envs/__init__.py": "5f636563cf74f6c23ad36089be4262e26c8e2a9171c07ee73423bf23a2b85506",
+        "game2048/envs/game2048.py": "79fc54c4a41067c7543d7269b40413dd0491d799dd75bf7a43fb7b97ea747f37",
+        "game2048/evaluation.py": "048ceec5d2ae77821f7a29445acafdfb01637c8938a11036f9b7783a50b31f43",
+        "game2048/evaluation_jobs.py": "c4da349023d51b4d294a871ac6d6bfb7c2a678604086af3f127a14c1eec55296",
+        "game2048/experiments.py": "b9ced9405895fcd06556d8714014f06127f41f6e6879e98929e20ca472e8b536",
+        "game2048/jax_env.py": "496b1362c935382e6f6aae5e805758cac393b1f67dd9b002a9b2824802947b3e",
+        "game2048/kernels.py": "6c58015d5b53f73dcc50a61d6eb13bdfc5ef442cc9d3feac30b7223453ba2155",
+        "game2048/network.py": "e4f9aa99bbb31f91668963f848c02b63054ca012a4f3a6d1d732f256d19e7c38",
+        "game2048/planner.py": "bc43cce48190eabc6da4f2d1d8c7a1268a5ac071e85560c9e536879cdde8850a",
+        "game2048/rules.py": "cb95a794cd04b202062d294651f56417125f104c9eeddbd73229e45508581e28",
+        "game2048/teacher.py": "cd7db3788a35fe480354b9c652022185e187763d4385df1d715b2c88118e072f",
+        "game2048/training.py": "9037c4931ad78012c89b64ddc4ba823b85e0e1e9b314d10800704fc9b022540c",
+        "game2048/wrappers/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "scripts/execute_ablation_job.py": "ca7bbf5e9f1015245d151d7a6b1bc0dfd65dd2aca963186ca65591df0f881147",
+        "scripts/profile_hotpaths.py": "20e2f0c88bb5b1e3427664cb1f5a101b87434de6713f12bd325cab11e25f400d",
+        "pyproject.toml": "21aab38a23f0fb366931ec8bacee4a5208a8bdaac42abc260ffe69399b47b765",
+        "uv.lock": "b6a0e3843cfd0ccf4e08348f40ec95750e16da181c6cba5ce762e56ca0b42e2e"
+      },
+      "runtime": {
+        "python": "3.12.16",
+        "packages": {
+          "jax": "0.12.0.1",
+          "jaxlib": "0.12.0.1",
+          "flax": "0.12.10",
+          "optax": "0.2.8",
+          "numpy": "2.5.4",
+          "jax-cuda12-plugin": "0.12.0.1",
+          "jax-cuda12-pjrt": "0.12.0.1",
+          "nvidia-cudnn-cu12": "9.10.2.21"
+        },
+        "flags": {
+          "JAX_PLATFORMS": "cuda",
+          "XLA_FLAGS": "--xla_gpu_deterministic_ops=true",
+          "JAX_DEFAULT_MATMUL_PRECISION": null,
+          "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+          "LD_LIBRARY_PATH": "/home/liu/other/sym2048-ablation/.venv/lib/python3.12/site-packages/nvidia/cudnn/lib:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
+        }
+      }
+    }
+  },
+  "step": 10000,
+  "history": [
+    {
+      "step": 0,
+      "validation": {
+        "algorithm_version": "distillation-d4-20261031-v1",
+        "mode": "greedy",
+        "model": {
+          "architecture": "plain",
+          "width": 83,
+          "blocks": 2,
+          "head_width": 64
+        },
+        "params_sha256": "4e148c3bfd3f02d9b99976448567fb7050bf5dbbbf3eb6a445cec2c8b49f0f48",
+        "games": 512,
+        "seed_start": 400000,
+        "batch_size": 256,
+        "smoke": false,
+        "source_sha256": "8fbdcb7947509adde2dd915dbd33a50cad76fc0035d81fa8b3f00b1d6703939e",
+        "runtime": {
+          "python": "3.12.16",
+          "packages": {
+            "jax": "0.12.0.1",
+            "jaxlib": "0.12.0.1",
+            "flax": "0.12.10",
+            "optax": "0.2.8",
+            "numpy": "2.5.4",
+            "jax-cuda12-plugin": "0.12.0.1",
+            "jax-cuda12-pjrt": "0.12.0.1",
+            "nvidia-cudnn-cu12": "9.10.2.21"
+          },
+          "flags": {
+            "JAX_PLATFORMS": "cuda",
+            "XLA_FLAGS": "--xla_gpu_deterministic_ops=true",
+            "JAX_DEFAULT_MATMUL_PRECISION": null,
+            "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+            "LD_LIBRARY_PATH": "/home/liu/other/sym2048-ablation/.venv/lib/python3.12/site-packages/nvidia/cudnn/lib:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
+          }
+        },
+        "mean_max_exponent": 8.041015625,
+        "mean_max_tile": 299.4375,
+        "mean_tile_sum": 433.734375,
+        "mean_moves": 195.21484375,
+        "standard_error_max_exponent": 0.03420689592719989,
+        "reach_rates": {
+          "256": 0.8046875,
+          "512": 0.27734375,
+          "1024": 0.0
+        },
+        "compile_seconds": 1.0598876570002176,
+        "execution_seconds": 1.2112857300089672
+      }
+    },
+    {
+      "step": 1000,
+      "loss": 0.006062716711312532,
+      "validation": {
+        "algorithm_version": "distillation-d4-20261031-v1",
+        "mode": "greedy",
+        "model": {
+          "architecture": "plain",
+          "width": 83,
+          "blocks": 2,
+          "head_width": 64
+        },
+        "params_sha256": "d24cbb1a6904bfd634f10658ba2e46868f83986be3eeba525ae7832df280bce1",
+        "games": 512,
+        "seed_start": 400000,
+        "batch_size": 256,
+        "smoke": false,
+        "source_sha256": "8fbdcb7947509adde2dd915dbd33a50cad76fc0035d81fa8b3f00b1d6703939e",
+        "runtime": {
+          "python": "3.12.16",
+          "packages": {
+            "jax": "0.12.0.1",
+            "jaxlib": "0.12.0.1",
+            "flax": "0.12.10",
+            "optax": "0.2.8",
+            "numpy": "2.5.4",
+            "jax-cuda12-plugin": "0.12.0.1",
+            "jax-cuda12-pjrt": "0.12.0.1",
+            "nvidia-cudnn-cu12": "9.10.2.21"
+          },
+          "flags": {
+            "JAX_PLATFORMS": "cuda",
+            "XLA_FLAGS": "--xla_gpu_deterministic_ops=true",
+            "JAX_DEFAULT_MATMUL_PRECISION": null,
+            "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+            "LD_LIBRARY_PATH": "/home/liu/other/sym2048-ablation/.venv/lib/python3.12/site-packages/nvidia/cudnn/lib:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
+          }
+        },
+        "mean_max_exponent": 7.6796875,
+        "mean_max_tile": 216.6875,
+        "mean_tile_sum": 285.34375,
+        "mean_moves": 127.73828125,
+        "standard_error_max_exponent": 0.02308835671798425,
+        "reach_rates": {
+          "256": 0.705078125,
+          "512": 0.0,
+          "1024": 0.0
+        },
+        "compile_seconds": 0.0023669310030527413,
+        "execution_seconds": 0.6854818549763877
+      }
+    },
+    {
+      "step": 2000,
+      "loss": 0.0015036766417324543,
+      "validation": {
+        "algorithm_version": "distillation-d4-20261031-v1",
+        "mode": "greedy",
+        "model": {
+          "architecture": "plain",
+          "width": 83,
+          "blocks": 2,
+          "head_width": 64
+        },
+        "params_sha256": "f15e721e21d3b77a1b870beb47c556f0f54531055348259f8193c7985a815558",
+        "games": 512,
+        "seed_start": 400000,
+        "batch_size": 256,
+        "smoke": false,
+        "source_sha256": "8fbdcb7947509adde2dd915dbd33a50cad76fc0035d81fa8b3f00b1d6703939e",
+        "runtime": {
+          "python": "3.12.16",
+          "packages": {
+            "jax": "0.12.0.1",
+            "jaxlib": "0.12.0.1",
+            "flax": "0.12.10",
+            "optax": "0.2.8",
+            "numpy": "2.5.4",
+            "jax-cuda12-plugin": "0.12.0.1",
+            "jax-cuda12-pjrt": "0.12.0.1",
+            "nvidia-cudnn-cu12": "9.10.2.21"
+          },
+          "flags": {
+            "JAX_PLATFORMS": "cuda",
+            "XLA_FLAGS": "--xla_gpu_deterministic_ops=true",
+            "JAX_DEFAULT_MATMUL_PRECISION": null,
+            "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+            "LD_LIBRARY_PATH": "/home/liu/other/sym2048-ablation/.venv/lib/python3.12/site-packages/nvidia/cudnn/lib:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
+          }
+        },
+        "mean_max_exponent": 7.88671875,
+        "mean_max_tile": 242.125,
+        "mean_tile_sum": 297.68359375,
+        "mean_moves": 133.283203125,
+        "standard_error_max_exponent": 0.015322997208156414,
+        "reach_rates": {
+          "256": 0.896484375,
+          "512": 0.0,
+          "1024": 0.0
+        },
+        "compile_seconds": 0.0010964829998556525,
+        "execution_seconds": 0.7435260600177571
+      }
+    },
+    {
+      "step": 3000,
+      "loss": 0.005778632126748562,
+      "validation": {
+        "algorithm_version": "distillation-d4-20261031-v1",
+        "mode": "greedy",
+        "model": {
+          "architecture": "plain",
+          "width": 83,
+          "blocks": 2,
+          "head_width": 64
+        },
+        "params_sha256": "cb52b7eb4f46dd8af3bf258ca135c70664a945a85e78d19dc47b5b6e5765ced5",
+        "games": 512,
+        "seed_start": 400000,
+        "batch_size": 256,
+        "smoke": false,
+        "source_sha256": "8fbdcb7947509adde2dd915dbd33a50cad76fc0035d81fa8b3f00b1d6703939e",
+        "runtime": {
+          "python": "3.12.16",
+          "packages": {
+            "jax": "0.12.0.1",
+            "jaxlib": "0.12.0.1",
+            "flax": "0.12.10",
+            "optax": "0.2.8",
+            "numpy": "2.5.4",
+            "jax-cuda12-plugin": "0.12.0.1",
+            "jax-cuda12-pjrt": "0.12.0.1",
+            "nvidia-cudnn-cu12": "9.10.2.21"
+          },
+          "flags": {
+            "JAX_PLATFORMS": "cuda",
+            "XLA_FLAGS": "--xla_gpu_deterministic_ops=true",
+            "JAX_DEFAULT_MATMUL_PRECISION": null,
+            "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+            "LD_LIBRARY_PATH": "/home/liu/other/sym2048-ablation/.venv/lib/python3.12/site-packages/nvidia/cudnn/lib:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
+          }
+        },
+        "mean_max_exponent": 7.890625,
+        "mean_max_tile": 243.21875,
+        "mean_tile_sum": 302.37109375,
+        "mean_moves": 135.455078125,
+        "standard_error_max_exponent": 0.016803637977121047,
+        "reach_rates": {
+          "256": 0.90625,
+          "512": 0.0,
+          "1024": 0.0
+        },
+        "compile_seconds": 0.0014831009902991354,
+        "execution_seconds": 0.7940419190272223
+      }
+    },
+    {
+      "step": 4000,
+      "loss": 0.002176597248762846,
+      "validation": {
+        "algorithm_version": "distillation-d4-20261031-v1",
+        "mode": "greedy",
+        "model": {
+          "architecture": "plain",
+          "width": 83,
+          "blocks": 2,
+          "head_width": 64
+        },
+        "params_sha256": "13390e2f00b5be9c77301a05229ca77feab1e83f3ddde86f35fbbbb4cf7722d5",
+        "games": 512,
+        "seed_start": 400000,
+        "batch_size": 256,
+        "smoke": false,
+        "source_sha256": "8fbdcb7947509adde2dd915dbd33a50cad76fc0035d81fa8b3f00b1d6703939e",
+        "runtime": {
+          "python": "3.12.16",
+          "packages": {
+            "jax": "0.12.0.1",
+            "jaxlib": "0.12.0.1",
+            "flax": "0.12.10",
+            "optax": "0.2.8",
+            "numpy": "2.5.4",
+            "jax-cuda12-plugin": "0.12.0.1",
+            "jax-cuda12-pjrt": "0.12.0.1",
+            "nvidia-cudnn-cu12": "9.10.2.21"
+          },
+          "flags": {
+            "JAX_PLATFORMS": "cuda",
+            "XLA_FLAGS": "--xla_gpu_deterministic_ops=true",
+            "JAX_DEFAULT_MATMUL_PRECISION": null,
+            "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+            "LD_LIBRARY_PATH": "/home/liu/other/sym2048-ablation/.venv/lib/python3.12/site-packages/nvidia/cudnn/lib:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
+          }
+        },
+        "mean_max_exponent": 7.94140625,
+        "mean_max_tile": 248.625,
+        "mean_tile_sum": 301.15234375,
+        "mean_moves": 134.86328125,
+        "standard_error_max_exponent": 0.010751304700413347,
+        "reach_rates": {
+          "256": 0.943359375,
+          "512": 0.0,
+          "1024": 0.0
+        },
+        "compile_seconds": 0.0011880430101882666,
+        "execution_seconds": 0.6881051460222807
+      }
+    },
+    {
+      "step": 5000,
+      "loss": 0.004956833552569151,
+      "validation": {
+        "algorithm_version": "distillation-d4-20261031-v1",
+        "mode": "greedy",
+        "model": {
+          "architecture": "plain",
+          "width": 83,
+          "blocks": 2,
+          "head_width": 64
+        },
+        "params_sha256": "0bed806cc115673634cd3673467604cee97fc11e9d4b44a03328932db5d5b348",
+        "games": 512,
+        "seed_start": 400000,
+        "batch_size": 256,
+        "smoke": false,
+        "source_sha256": "8fbdcb7947509adde2dd915dbd33a50cad76fc0035d81fa8b3f00b1d6703939e",
+        "runtime": {
+          "python": "3.12.16",
+          "packages": {
+            "jax": "0.12.0.1",
+            "jaxlib": "0.12.0.1",
+            "flax": "0.12.10",
+            "optax": "0.2.8",
+            "numpy": "2.5.4",
+            "jax-cuda12-plugin": "0.12.0.1",
+            "jax-cuda12-pjrt": "0.12.0.1",
+            "nvidia-cudnn-cu12": "9.10.2.21"
+          },
+          "flags": {
+            "JAX_PLATFORMS": "cuda",
+            "XLA_FLAGS": "--xla_gpu_deterministic_ops=true",
+            "JAX_DEFAULT_MATMUL_PRECISION": null,
+            "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+            "LD_LIBRARY_PATH": "/home/liu/other/sym2048-ablation/.venv/lib/python3.12/site-packages/nvidia/cudnn/lib:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
+          }
+        },
+        "mean_max_exponent": 8.26171875,
+        "mean_max_tile": 337.5625,
+        "mean_tile_sum": 473.44140625,
+        "mean_moves": 213.44140625,
+        "standard_error_max_exponent": 0.029190297623344096,
+        "reach_rates": {
+          "256": 0.904296875,
+          "512": 0.369140625,
+          "1024": 0.0
+        },
+        "compile_seconds": 0.0016705839952919632,
+        "execution_seconds": 1.1752685999963433
+      }
+    },
+    {
+      "step": 6000,
+      "loss": 0.0074366130866110325,
+      "validation": {
+        "algorithm_version": "distillation-d4-20261031-v1",
+        "mode": "greedy",
+        "model": {
+          "architecture": "plain",
+          "width": 83,
+          "blocks": 2,
+          "head_width": 64
+        },
+        "params_sha256": "8ebaa56dbb5da976037ea6e05997b45387329f362215bf02c514be411adba4ae",
+        "games": 512,
+        "seed_start": 400000,
+        "batch_size": 256,
+        "smoke": false,
+        "source_sha256": "8fbdcb7947509adde2dd915dbd33a50cad76fc0035d81fa8b3f00b1d6703939e",
+        "runtime": {
+          "python": "3.12.16",
+          "packages": {
+            "jax": "0.12.0.1",
+            "jaxlib": "0.12.0.1",
+            "flax": "0.12.10",
+            "optax": "0.2.8",
+            "numpy": "2.5.4",
+            "jax-cuda12-plugin": "0.12.0.1",
+            "jax-cuda12-pjrt": "0.12.0.1",
+            "nvidia-cudnn-cu12": "9.10.2.21"
+          },
+          "flags": {
+            "JAX_PLATFORMS": "cuda",
+            "XLA_FLAGS": "--xla_gpu_deterministic_ops=true",
+            "JAX_DEFAULT_MATMUL_PRECISION": null,
+            "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+            "LD_LIBRARY_PATH": "/home/liu/other/sym2048-ablation/.venv/lib/python3.12/site-packages/nvidia/cudnn/lib:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
+          }
+        },
+        "mean_max_exponent": 8.427734375,
+        "mean_max_tile": 375.5,
+        "mean_tile_sum": 493.8828125,
+        "mean_moves": 222.552734375,
+        "standard_error_max_exponent": 0.02855463672950731,
+        "reach_rates": {
+          "256": 0.9375,
+          "512": 0.5,
+          "1024": 0.0
+        },
+        "compile_seconds": 0.001040178001858294,
+        "execution_seconds": 1.214695890987059
+      }
+    },
+    {
+      "step": 7000,
+      "loss": 0.0030698145274072886,
+      "validation": {
+        "algorithm_version": "distillation-d4-20261031-v1",
+        "mode": "greedy",
+        "model": {
+          "architecture": "plain",
+          "width": 83,
+          "blocks": 2,
+          "head_width": 64
+        },
+        "params_sha256": "2e02e0b3099c8ce9ddba7c5b51e38554d3cdb86cd8aa3ec68651153a200351bc",
+        "games": 512,
+        "seed_start": 400000,
+        "batch_size": 256,
+        "smoke": false,
+        "source_sha256": "8fbdcb7947509adde2dd915dbd33a50cad76fc0035d81fa8b3f00b1d6703939e",
+        "runtime": {
+          "python": "3.12.16",
+          "packages": {
+            "jax": "0.12.0.1",
+            "jaxlib": "0.12.0.1",
+            "flax": "0.12.10",
+            "optax": "0.2.8",
+            "numpy": "2.5.4",
+            "jax-cuda12-plugin": "0.12.0.1",
+            "jax-cuda12-pjrt": "0.12.0.1",
+            "nvidia-cudnn-cu12": "9.10.2.21"
+          },
+          "flags": {
+            "JAX_PLATFORMS": "cuda",
+            "XLA_FLAGS": "--xla_gpu_deterministic_ops=true",
+            "JAX_DEFAULT_MATMUL_PRECISION": null,
+            "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+            "LD_LIBRARY_PATH": "/home/liu/other/sym2048-ablation/.venv/lib/python3.12/site-packages/nvidia/cudnn/lib:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
+          }
+        },
+        "mean_max_exponent": 8.45703125,
+        "mean_max_tile": 383.625,
+        "mean_tile_sum": 493.890625,
+        "mean_moves": 222.58203125,
+        "standard_error_max_exponent": 0.028670088005268116,
+        "reach_rates": {
+          "256": 0.92578125,
+          "512": 0.537109375,
+          "1024": 0.0
+        },
+        "compile_seconds": 0.0014366039831656963,
+        "execution_seconds": 1.1240602839970961
+      }
+    },
+    {
+      "step": 8000,
+      "loss": 0.004427997395396233,
+      "validation": {
+        "algorithm_version": "distillation-d4-20261031-v1",
+        "mode": "greedy",
+        "model": {
+          "architecture": "plain",
+          "width": 83,
+          "blocks": 2,
+          "head_width": 64
+        },
+        "params_sha256": "fbdf7c73edf159799f95d8ea300efadded6354e8da18c2b5961676c3b70f4cd2",
+        "games": 512,
+        "seed_start": 400000,
+        "batch_size": 256,
+        "smoke": false,
+        "source_sha256": "8fbdcb7947509adde2dd915dbd33a50cad76fc0035d81fa8b3f00b1d6703939e",
+        "runtime": {
+          "python": "3.12.16",
+          "packages": {
+            "jax": "0.12.0.1",
+            "jaxlib": "0.12.0.1",
+            "flax": "0.12.10",
+            "optax": "0.2.8",
+            "numpy": "2.5.4",
+            "jax-cuda12-plugin": "0.12.0.1",
+            "jax-cuda12-pjrt": "0.12.0.1",
+            "nvidia-cudnn-cu12": "9.10.2.21"
+          },
+          "flags": {
+            "JAX_PLATFORMS": "cuda",
+            "XLA_FLAGS": "--xla_gpu_deterministic_ops=true",
+            "JAX_DEFAULT_MATMUL_PRECISION": null,
+            "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+            "LD_LIBRARY_PATH": "/home/liu/other/sym2048-ablation/.venv/lib/python3.12/site-packages/nvidia/cudnn/lib:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
+          }
+        },
+        "mean_max_exponent": 8.470703125,
+        "mean_max_tile": 384.1875,
+        "mean_tile_sum": 502.83203125,
+        "mean_moves": 226.57421875,
+        "standard_error_max_exponent": 0.027199629584620744,
+        "reach_rates": {
+          "256": 0.94921875,
+          "512": 0.52734375,
+          "1024": 0.0
+        },
+        "compile_seconds": 0.0010917129984591156,
+        "execution_seconds": 1.2107588929939084
+      }
+    },
+    {
+      "step": 9000,
+      "loss": 0.006849369499832392,
+      "validation": {
+        "algorithm_version": "distillation-d4-20261031-v1",
+        "mode": "greedy",
+        "model": {
+          "architecture": "plain",
+          "width": 83,
+          "blocks": 2,
+          "head_width": 64
+        },
+        "params_sha256": "5548f38d4019bd62b83b1d5ed8ec01eee305e877d7cf294db66bd2b3a3b18a8e",
+        "games": 512,
+        "seed_start": 400000,
+        "batch_size": 256,
+        "smoke": false,
+        "source_sha256": "8fbdcb7947509adde2dd915dbd33a50cad76fc0035d81fa8b3f00b1d6703939e",
+        "runtime": {
+          "python": "3.12.16",
+          "packages": {
+            "jax": "0.12.0.1",
+            "jaxlib": "0.12.0.1",
+            "flax": "0.12.10",
+            "optax": "0.2.8",
+            "numpy": "2.5.4",
+            "jax-cuda12-plugin": "0.12.0.1",
+            "jax-cuda12-pjrt": "0.12.0.1",
+            "nvidia-cudnn-cu12": "9.10.2.21"
+          },
+          "flags": {
+            "JAX_PLATFORMS": "cuda",
+            "XLA_FLAGS": "--xla_gpu_deterministic_ops=true",
+            "JAX_DEFAULT_MATMUL_PRECISION": null,
+            "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+            "LD_LIBRARY_PATH": "/home/liu/other/sym2048-ablation/.venv/lib/python3.12/site-packages/nvidia/cudnn/lib:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
+          }
+        },
+        "mean_max_exponent": 8.53125,
+        "mean_max_tile": 398.375,
+        "mean_tile_sum": 507.94921875,
+        "mean_moves": 228.95703125,
+        "standard_error_max_exponent": 0.026338611968562967,
+        "reach_rates": {
+          "256": 0.958984375,
+          "512": 0.578125,
+          "1024": 0.0
+        },
+        "compile_seconds": 0.001132955017965287,
+        "execution_seconds": 1.1723607710155193
+      }
+    },
+    {
+      "step": 10000,
+      "loss": 0.00527703994885087,
+      "validation": {
+        "algorithm_version": "distillation-d4-20261031-v1",
+        "mode": "greedy",
+        "model": {
+          "architecture": "plain",
+          "width": 83,
+          "blocks": 2,
+          "head_width": 64
+        },
+        "params_sha256": "ca1e8bd6bf4ad68019824da3f4e39219379bc75b0d85555439b02d7a18fb7b20",
+        "games": 512,
+        "seed_start": 400000,
+        "batch_size": 256,
+        "smoke": false,
+        "source_sha256": "8fbdcb7947509adde2dd915dbd33a50cad76fc0035d81fa8b3f00b1d6703939e",
+        "runtime": {
+          "python": "3.12.16",
+          "packages": {
+            "jax": "0.12.0.1",
+            "jaxlib": "0.12.0.1",
+            "flax": "0.12.10",
+            "optax": "0.2.8",
+            "numpy": "2.5.4",
+            "jax-cuda12-plugin": "0.12.0.1",
+            "jax-cuda12-pjrt": "0.12.0.1",
+            "nvidia-cudnn-cu12": "9.10.2.21"
+          },
+          "flags": {
+            "JAX_PLATFORMS": "cuda",
+            "XLA_FLAGS": "--xla_gpu_deterministic_ops=true",
+            "JAX_DEFAULT_MATMUL_PRECISION": null,
+            "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+            "LD_LIBRARY_PATH": "/home/liu/other/sym2048-ablation/.venv/lib/python3.12/site-packages/nvidia/cudnn/lib:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
+          }
+        },
+        "mean_max_exponent": 8.525390625,
+        "mean_max_tile": 397.6875,
+        "mean_tile_sum": 515.0,
+        "mean_moves": 232.197265625,
+        "standard_error_max_exponent": 0.02692488159397417,
+        "reach_rates": {
+          "256": 0.953125,
+          "512": 0.578125,
+          "1024": 0.0
+        },
+        "compile_seconds": 0.00204819900682196,
+        "execution_seconds": 1.1927292119944468
+      }
+    }
+  ],
+  "best_score": 8.53125,
+  "best_step": 9000,
+  "stale": 1,
+  "elapsed_seconds": 2447.2346391790197,
+  "environment_transitions": 40960000,
+  "parameter_count": 305403,
+  "training_compile_seconds": 4.805515505024232,
+  "training_execution_seconds": 2429.356911676732,
+  "params_sha256": "ca1e8bd6bf4ad68019824da3f4e39219379bc75b0d85555439b02d7a18fb7b20",
+  "best_params_sha256": "5548f38d4019bd62b83b1d5ed8ec01eee305e877d7cf294db66bd2b3a3b18a8e"
+}

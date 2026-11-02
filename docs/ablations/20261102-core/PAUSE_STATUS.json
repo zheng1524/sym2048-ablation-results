@@ -1,0 +1,52 @@
+{
+  "status": "paused_by_user",
+  "saved_utc": "2026-11-02T05:41:38.960738+00:00",
+  "reason": "Shutdown requested by user",
+  "group": "d4_scratch_practical",
+  "seed": 0,
+  "phase": "td",
+  "resume_step": 41000,
+  "interrupted_observed_step": 41191,
+  "target_updates": 100000,
+  "remaining_seeds_not_started": [
+    1,
+    2
+  ],
+  "best_validation_mean_max_exponent": 7.970703125,
+  "best_step": 32000,
+  "core_training_and_test_complete": true,
+  "formal_test_games": 18000,
+  "full_recovery_sha256": "970da094025a6cd079b90b4def5fe505ac762d13a382a74231cb64816f3f5c3b",
+  "current_params_sha256": "401c0e2be6f6ebe94fd79fa1369dd78f4a8b7dab90d1812c8407c048aea32539",
+  "best_params_sha256": "2e0b7f642d7435e962ca644ab22e9a0f4b0b4301d987a815befb2dbee51cf055",
+  "restoration_audit": {
+    "method": "CUDA read_recovery into actual model and AdamW TrainState under recorded runtime; no training updates",
+    "strict_request_source_protocol_match": true,
+    "optimizer_restored_and_finite": true,
+    "parameters_and_best_hashes_verified": true,
+    "random_streams_restored": [
+      "augment",
+      "collect",
+      "heldout",
+      "sample",
+      "td_env",
+      "td_reset",
+      "td_tie"
+    ],
+    "boards_shape": [
+      128,
+      3,
+      3
+    ],
+    "environment_transitions": 167936000,
+    "pool_shape": [
+      0
+    ]
+  },
+  "independent_local_backup": {
+    "path": "/home/liu/other/sym2048-shutdown-checkpoint-20261102-step41000.tar.gz",
+    "bytes": 10280524,
+    "sha256": "f250f1c108254786bed0ab2da0c64bdb1ad90e219640af5feddc30d8e1b067ae",
+    "all_members_byte_verified": true
+  }
+}

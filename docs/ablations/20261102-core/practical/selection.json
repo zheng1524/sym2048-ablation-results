@@ -1,0 +1,68 @@
+{
+  "required": true,
+  "candidates": [
+    {
+      "learning_rate": 3e-05,
+      "validation_score": 5.962890625
+    },
+    {
+      "learning_rate": 0.0001,
+      "validation_score": 6.693359375
+    },
+    {
+      "learning_rate": 0.0003,
+      "validation_score": 6.8671875
+    }
+  ],
+  "chosen": {
+    "learning_rate": 0.0003,
+    "validation_score": 6.8671875
+  },
+  "rule": "Maximum best validation mean_max_exponent; tie -> lower learning rate",
+  "validation_scores": {
+    "d4_distill_td": [
+      8.658203125,
+      8.662109375,
+      8.671875
+    ],
+    "d4_scratch_td": [
+      6.99609375,
+      6.99609375,
+      7.0
+    ]
+  },
+  "protocol": {
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "smoke": false,
+    "validation_seed": 400000,
+    "validation_games": 512,
+    "test_seed": 500000,
+    "test_games": 2000,
+    "evaluation_batch": 256,
+    "gradient_microbatch_size": 512,
+    "supervised": {
+      "batch_size": 1024,
+      "learning_rate": 0.0003,
+      "max_updates": 100000,
+      "warmup_updates": 5000,
+      "validation_every": 5000,
+      "collect_every": 1000,
+      "collection_envs": 128,
+      "collection_steps": 256,
+      "pool_capacity": 262144
+    },
+    "td": {
+      "updates": 100000,
+      "learning_rate": 0.0003,
+      "trace_lambda": 0.8,
+      "envs": 128,
+      "horizon": 32,
+      "validation_every": 1000
+    },
+    "version": "distillation-d4-20261031-v1"
+  }
+}
