@@ -1,0 +1,111 @@
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 1, 'loss': 0.8900392055511475}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 100, 'loss': 0.0235301461070776}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 200, 'loss': 0.006339650601148605}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 300, 'loss': 0.006520700640976429}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 400, 'loss': 0.00556151894852519}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 500, 'loss': 0.003792664734646678}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 600, 'loss': 0.01932104118168354}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 700, 'loss': 0.005487574730068445}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 800, 'loss': 0.005193418823182583}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 900, 'loss': 0.00614476203918457}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 1000, 'loss': 0.004083042498677969}
+{'validation_step': 1000, 'score': 5.92578125}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 1100, 'loss': 0.002079188358038664}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 1200, 'loss': 0.003418196691200137}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 1300, 'loss': 0.007482902612537146}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 1400, 'loss': 0.0011647180654108524}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 1500, 'loss': 0.0014942896086722612}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 1600, 'loss': 0.0025775183457881212}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 1700, 'loss': 0.0015105817001312971}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 1800, 'loss': 0.000296123354928568}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 1900, 'loss': 0.007426188327372074}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 2000, 'loss': 0.005823921412229538}
+{'validation_step': 2000, 'score': 5.966796875}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 2100, 'loss': 0.0012079449370503426}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 2200, 'loss': 0.0027356348000466824}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 2300, 'loss': 0.003793661016970873}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 2400, 'loss': 0.003619904164224863}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 2500, 'loss': 0.0008738471660763025}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 2600, 'loss': 0.0027056587859988213}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 2700, 'loss': 0.00023748238163534552}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 2800, 'loss': 0.0007571583264507353}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 2900, 'loss': 0.0003180885687470436}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 3000, 'loss': 0.0030952556990087032}
+{'validation_step': 3000, 'score': 5.9765625}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 3100, 'loss': 0.003912313841283321}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 3200, 'loss': 0.00030305449035950005}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 3300, 'loss': 0.006599447689950466}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 3400, 'loss': 0.0018881745636463165}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 3500, 'loss': 0.00759787205606699}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 3600, 'loss': 0.009879053570330143}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 3700, 'loss': 0.009399522095918655}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 3800, 'loss': 0.012954049743711948}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 3900, 'loss': 0.007892328314483166}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 4000, 'loss': 0.01040101982653141}
+{'validation_step': 4000, 'score': 6.755859375}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 4100, 'loss': 0.007457118481397629}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 4200, 'loss': 0.0058314064517617226}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 4300, 'loss': 0.00582042895257473}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 4400, 'loss': 0.004053300246596336}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 4500, 'loss': 0.004767825361341238}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 4600, 'loss': 0.009279606863856316}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 4700, 'loss': 0.0030655465088784695}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 4800, 'loss': 0.0017282686894759536}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 4900, 'loss': 0.0008255786960944533}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 5000, 'loss': 0.00450043985620141}
+{'validation_step': 5000, 'score': 6.947265625}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 5100, 'loss': 0.0003139917680528015}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 5200, 'loss': 0.0002744634111877531}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 5300, 'loss': 0.001516252406872809}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 5400, 'loss': 0.0002417552168481052}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 5500, 'loss': 0.002115198178216815}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 5600, 'loss': 0.004599607549607754}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 5700, 'loss': 0.00946657545864582}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 5800, 'loss': 0.0009511662065051496}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 5900, 'loss': 9.702764509711415e-05}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 6000, 'loss': 0.002058683894574642}
+{'validation_step': 6000, 'score': 6.97265625}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 6100, 'loss': 0.00016187259461730719}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 6200, 'loss': 0.01047830656170845}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 6300, 'loss': 0.0006995131261646748}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 6400, 'loss': 0.0018311419989913702}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 6500, 'loss': 0.0009058407158590853}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 6600, 'loss': 0.0017557075479999185}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 6700, 'loss': 0.000484959949972108}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 6800, 'loss': 0.0006423023296520114}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 6900, 'loss': 0.0005311717977747321}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 7000, 'loss': 0.0004466536338441074}
+{'validation_step': 7000, 'score': 6.98828125}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 7100, 'loss': 0.003151500830426812}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 7200, 'loss': 0.0015469774371013045}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 7300, 'loss': 8.179763972293586e-05}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 7400, 'loss': 7.449012628057972e-05}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 7500, 'loss': 0.00013500911882147193}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 7600, 'loss': 0.0005950168124400079}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 7700, 'loss': 0.00019206629076506943}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 7800, 'loss': 0.0003353967622388154}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 7900, 'loss': 0.002961166901513934}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 8000, 'loss': 0.0004490424762479961}
+{'validation_step': 8000, 'score': 6.98828125}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 8100, 'loss': 0.0001505018153693527}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 8200, 'loss': 0.014811812900006771}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 8300, 'loss': 0.0011804962996393442}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 8400, 'loss': 0.006489093881100416}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 8500, 'loss': 0.0007524857064709067}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 8600, 'loss': 0.00010976416524499655}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 8700, 'loss': 6.424363527912647e-05}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 8800, 'loss': 0.0031105473171919584}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 8900, 'loss': 0.0007993423496372998}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 9000, 'loss': 9.287658758694306e-05}
+{'validation_step': 9000, 'score': 6.98046875}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 9100, 'loss': 0.0005359704955480993}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 9200, 'loss': 0.0006027498748153448}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 9300, 'loss': 5.687414886779152e-05}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 9400, 'loss': 7.088744314387441e-05}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 9500, 'loss': 0.0006717444048263133}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 9600, 'loss': 0.0006823575240559876}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 9700, 'loss': 0.0008640197338536382}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 9800, 'loss': 0.0012941397726535797}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 9900, 'loss': 0.0006493251421488822}
+{'group': 'd4_scratch_td', 'seed': 0, 'td_step': 10000, 'loss': 0.00013483528164215386}
+{'validation_step': 10000, 'score': 6.99609375}
